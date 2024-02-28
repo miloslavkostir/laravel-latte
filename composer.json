@@ -1,0 +1,22 @@
+{
+    "name": "miko/laravel-latte",
+    "description": "Latte template engine for Laravel",
+    "keywords": ["laravel", "latte", "template", "view"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Miloslav Koštíř",
+            "email": "miloslav.kostir@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.4.0",
+        "illuminate/view": "^8.0 || ^9.0",
+        "latte/latte": "^2.9"
+    },
+    "autoload": {
+        "psr-4": {
+            "Miko\\LaravelLatte\\": "src/"
+        }
+    }
+}
