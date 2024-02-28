@@ -23,10 +23,6 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         });
     }
 
-    /**
-     * @param \Illuminate\Foundation\Application $app
-     * @return \Latte\Engine
-     */
     private function createLatte(Application $app): Latte
     {
         $config = $this->app['config'];
@@ -39,9 +35,6 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         return $latte;
     }
 
-    /**
-     * @return \Miko\LaravelLatte\LatteEngine
-     */
     private function createEngine(): LatteEngine
     {
         return new LatteEngine($this->app[Latte::class]);

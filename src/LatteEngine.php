@@ -24,6 +24,7 @@ class LatteEngine implements \Illuminate\Contracts\View\Engine
      */
     public function get($path, array $data = [])
     {
+        DeterministicKeys::setPath($path);
         return $this->latte->renderToString($path, $data);
     }
 }

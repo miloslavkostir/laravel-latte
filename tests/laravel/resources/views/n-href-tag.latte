@@ -1,0 +1,17 @@
+<a n:href="Test@detail" class="foo">Click me</a>
+<a n:href="TestController@detail" class="foo">Click me</a>
+<a n:href="Test@" class="foo">Click me</a>
+<a n:href="detail" class="foo">Click me</a>
+<a n:href="detail 654" class="foo">Click me</a>
+<a n:href="Test@detail 123" class="foo">Click me</a>
+<a n:href="'Admin\Test@detail'" class="foo">Click me</a>
+<a n:href="this" class="foo">Click me</a>
+<a n:href="this 456" class="foo">Click me</a>
+<a n:href="this foo => bar" class="foo">Click me</a>
+<a n:href="this id => null, foo => bar" class="foo">Click me</a>
+<a n:href="Test@detail 147, lang: cs" class="foo">Click me</a>
+{var $params = ['foo' => 'bar', 'lang' => 'cs', 'x' => 1]}
+<a n:href="Test@detail 147, ...$params" class="foo">Click me</a>
+{var $params = ['foo' => 'bar', 'lang' => 'cs', 'id' => 1]}
+<a n:href="Test@detail, ...$params" class="foo">Click me</a>
+<a n:href="Test@detail, (expand) $params" class="foo">Click me</a>

@@ -1,0 +1,17 @@
+{link Test@detail}
+{link TestController@detail}
+{link Test@}
+{link detail}
+{link detail 654}
+{link Test@detail 123}
+{link "Admin\Test@detail"}
+{link this}
+{link this 456}
+{link this foo => bar}
+{link this id => null, foo => bar}
+{link Test@detail 147, lang: cs}
+{var $params = ['foo' => 'bar', 'lang' => 'cs', 'x' => 1]}
+{link Test@detail 147, ...$params}
+{var $params = ['foo' => 'bar', 'lang' => 'cs', 'id' => 1]}
+{link Test@detail, ...$params}
+{link Test@detail, (expand) $params}

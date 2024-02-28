@@ -47,11 +47,10 @@ class AssetNode extends StatementNode
             $context->beginEscape()->enterHtmlAttribute(null, '"');
             $res = $context->format(
                 <<<'XX'
-                    echo ' src="'; echo %modify(\Miko\LaravelLatte\Runtime\Asset::generate(%node)); echo '"';
+                    echo ' src="'; echo %modify(\Miko\LaravelLatte\Runtime\Asset::generate(%node)) %line; echo '"';
                     XX,
                 $this->modifier,
                 $this->destination,
-                $this->args,
                 $this->position,
             );
             $context->restoreEscape();
@@ -59,10 +58,9 @@ class AssetNode extends StatementNode
         }
 
         return $context->format(
-            'echo %modify(\Miko\LaravelLatte\Runtime\Asset::generate(%node));',
+            'echo %modify(\Miko\LaravelLatte\Runtime\Asset::generate(%node)) %line;',
             $this->modifier,
             $this->destination,
-            $this->args,
             $this->position,
         );
     }

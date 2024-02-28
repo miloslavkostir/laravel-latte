@@ -11,20 +11,7 @@ $ composer require miko/laravel-latte
 
 ## Implementation
 
-`config/app.php`:
-```php
-
-    'providers' => [
-
-        /*
-         * Package Service Providers...
-         */
-        Miko\LaravelLatte\ServiceProvider::class
-
-    ],
-
-]
-```
+Register `Miko\LaravelLatte\ServiceProvider` in `bootstrap/providers.php`
 
 Then the templating engine is used according to the file extension:
 - `*.blade.php` - [Blade (Laravel default)](https://laravel.com/docs/blade)
@@ -107,4 +94,22 @@ Generates a hidden input `_method` in the form for [Form Method Spoofing](https:
 <form action="/example" method="POST">
     {method PUT}
 </form>
+```
+
+### `livewire`, `livewireStyles`, `livewireScripts` a `livewireScriptConfig`
+**🧪 Experimental**   
+Tags for [Livewire](https://livewire.laravel.com/). They are only available if livewire is implemented.
+```html
+<!doctype html>
+<html lang="en">
+    <head>
+        <title></title>
+        {livewireStyles}
+    </head>
+<body>
+    {livewire component-name foo => bar}
+    {livewireScripts}
+    {livewireScriptConfig}
+</body>
+</html>
 ```

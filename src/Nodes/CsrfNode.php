@@ -18,7 +18,12 @@ class CsrfNode extends StatementNode
 
     public function print(PrintContext $context): string
     {
-        return $context->format('echo csrf_field();');
+        return $context->format(
+            <<<'XX'
+                echo \Miko\LaravelLatte\Runtime\Csrf::generate() %line;
+                XX,
+                $this->position
+        );
     }
 
     public function &getIterator(): \Generator
