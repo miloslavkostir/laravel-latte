@@ -6,18 +6,16 @@ namespace Miko\LaravelLatte;
 
 use Latte\Engine;
 
-
 class LatteEngine implements \Illuminate\Contracts\View\Engine
 {
-    
     private $latte;
-    
+
     public function __construct(Engine $latte)
     {
         $this->latte = $latte;
     }
 
-   /**
+    /**
      * Get the evaluated contents of the view.
      *
      * @param  string  $path
@@ -28,6 +26,4 @@ class LatteEngine implements \Illuminate\Contracts\View\Engine
     {
         return $this->latte->renderToString($path, $data);
     }
-
-
 }
