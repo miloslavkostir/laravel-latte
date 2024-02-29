@@ -19,11 +19,11 @@ class LivewireNode extends StatementNode
 
     public static function create(Tag $tag): ?static
     {
-
         $tag->outputMode = $tag::OutputKeepIndentation;
         $tag->expectArguments();
         $node = $tag->node = new self();
         $node->name = $tag->parser->parseUnquotedStringOrExpression();
+        $tag->parser->stream->tryConsume(',');
         $node->args = $tag->parser->parseArguments();
         return $node;
     }

@@ -17,6 +17,13 @@ class LaravelLatteTest extends TestCase
         $this->assertEquals($expected, $output);
     }
 
+    public function test_blade(): void
+    {
+        $output = view('homepage', ['foo' => 'Bar'])->render();
+
+        $this->assertEquals('Hello Bar', $output);
+    }
+
     public function test_csrf_tag(): void
     {
         $output = view('csrf-tag')->render();
@@ -61,11 +68,17 @@ class LaravelLatteTest extends TestCase
 
     public function test_asset_tag(): void
     {
-        $time = filemtime(public_path('style.css'));
+        $time1 = filemtime(public_path('style.css'));
+        $time2 = filemtime(public_path('script.js'));
 
-        $output = view('asset-tag')->render();
+        $output = view('asset-tag', ['src' => '/script.js'])->render();
 
-        $this->assertEquals('/style.css?m=' . $time, $output);
+        $expected = <<<HTML
+        /style.css?m=$time1
+        /script.js?m=$time2
+        HTML;
+
+        $this->assertEquals($expected, $output);
     }
 
     public function test_asset_tag_without_parameter(): void
@@ -78,11 +91,17 @@ class LaravelLatteTest extends TestCase
 
     public function test_n_src_tag(): void
     {
-        $time = filemtime(public_path('script.js'));
+        $time1 = filemtime(public_path('style.css'));
+        $time2 = filemtime(public_path('script.js'));
 
-        $output = view('n-src-tag')->render();
+        $output = view('n-src-tag', ['src' => '/script.js'])->render();
 
-        $this->assertEquals('<script src="/script.js?m=' . $time . '" async></script>', $output);
+        $expected = <<<HTML
+        <script src="/script.js?m=$time1" async></script>
+        <script src="/script.js?m=$time2" async></script>
+        HTML;
+
+        $this->assertEquals($expected, $output);
     }
 
     public function test_link_tag(): void
@@ -107,12 +126,12 @@ class LaravelLatteTest extends TestCase
 
     public function test_livewire_tag(): void
     {
-        $html = new HtmlTest(view('livewire-tag')->render());
+        $html = new HtmlTest(view('livewire-tag', ['name' => 'my-component'])->render());
 
         $html->assertElementContains('h1', 'My component');
-        $html->assertElementExists('div[wire\:snapshot]');
-        $html->assertElementExists('div[wire\:effects]');
-        $html->assertElementExists('div[wire\:id]');
+        $html->assertElementcount('div[wire\:snapshot]', 4);
+        $html->assertElementcount('div[wire\:effects]', 4);
+        $html->assertElementcount('div[wire\:id]', 4);
         $html->assertElementContains('div', 'Variable lorem from my component is ipsum');
     }
 

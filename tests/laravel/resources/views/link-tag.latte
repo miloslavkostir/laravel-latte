@@ -15,3 +15,6 @@
 {var $params = ['foo' => 'bar', 'lang' => 'cs', 'id' => 1]}
 {link Test@detail, ...$params}
 {link Test@detail, (expand) $params}
+{var $action = 'Test@detail'}
+{link $action}
+{link $action, ...$params}
