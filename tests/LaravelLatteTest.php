@@ -2,6 +2,7 @@
 
 namespace Miko\LaravelLatte\Tests;
 
+use Nette\Utils\Finder;
 use Ssddanbrown\AssertHtml\HtmlTest;
 use Symfony\Component\VarDumper\VarDumper;
 
@@ -113,6 +114,33 @@ class LaravelLatteTest extends TestCase
         $html->assertElementExists('div[wire\:effects]');
         $html->assertElementExists('div[wire\:id]');
         $html->assertElementContains('div', 'Variable lorem from my component is ipsum');
+    }
+
+    public function test_multiple_livewire_tag(): void
+    {
+        $html = new HtmlTest(view('livewire-tags')->render());
+
+        $html->assertElementContains('h1', 'My component multiple');
+        $html->assertElementCount('div[wire\:snapshot]', 5);
+        $html->assertElementCount('div[wire\:effects]', 5);
+        $html->assertElementCount('div[wire\:id]', 5);
+
+        // Check correctly generated keys
+        $finder = Finder::findFiles('resources-views-livewire-tags.latte--*.php')->in(self::TEMP_DIR);
+        $files = $finder->collect();
+        $pattern = function (string|int $key, string|int $line) {
+            if (is_int($key)) {
+                $key = 'lw-'.crc32(realpath(resource_path('views/livewire-tags.latte'))).'-'.$key;
+            }
+            return 'echo ' . preg_quote('\Miko\LaravelLatte\Runtime\Livewire') . "::generate\('my-component', \[\], '$key'\) \/\* line $line \*\/";
+        };
+
+        $this->assertMatchesRegularExpression('#'.$pattern(0, 2).'#', file_get_contents($files[0]));
+        $this->assertMatchesRegularExpression('#'.$pattern(1, 3).'#', file_get_contents($files[0]));
+        $this->assertMatchesRegularExpression('#'.$pattern(2, 4).'#', file_get_contents($files[0]));
+        $this->assertDoesNotMatchRegularExpression('#'.$pattern(3, '.').'#', file_get_contents($files[0]));
+        $this->assertMatchesRegularExpression('#'.$pattern('lorem', 5).'#', file_get_contents($files[0]));
+        $this->assertMatchesRegularExpression('#'.$pattern('ipsum', 6).'#', file_get_contents($files[0]));
     }
 
     public function test_livewire_styles_tag(): void
