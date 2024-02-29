@@ -19,7 +19,7 @@ class Link
 
         if (count($array) === 1 && ($current = Route::currentRouteAction()) === null) {
             // 'this' with parameters and the method name must have an action defined
-            throw new \RuntimeException('Latte function link(): there is no current route action for "' . $name . '"');
+            throw new \RuntimeException('Cannot find route action for "' . $name . '"');
         }
 
         if (count($array) === 1) {
