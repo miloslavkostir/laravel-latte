@@ -9,7 +9,7 @@ use Nette\Utils\FileSystem;
 
 class TestCase extends BaseTestCase
 {
-    private $tempDir = __DIR__ . '/laravel/storage/framework/views';
+    protected const TEMP_DIR = __DIR__ . '/laravel/storage/framework/views';
 
     public function createApplication()
     {
@@ -20,7 +20,7 @@ class TestCase extends BaseTestCase
         $app['config']->set('app.key', Encrypter::generateKey('dek-apps-laravel-latte'));
         $app['config']->set('debug', true);
         $app['config']->set('session.driver', 'array');
-        //$app['config']->set('view.compiled', $this->tempDir);
+        //$app['config']->set('view.compiled', self::TEMP_DIR);
 
         return $app;
     }
@@ -32,8 +32,8 @@ class TestCase extends BaseTestCase
 
     protected function setUp(): void
     {
-        FileSystem::delete($this->tempDir);
-        FileSystem::createDir($this->tempDir);
+        FileSystem::delete(self::TEMP_DIR);
+        FileSystem::createDir(self::TEMP_DIR);
 
         parent::setUp();
     }

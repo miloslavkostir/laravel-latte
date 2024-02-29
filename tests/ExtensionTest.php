@@ -2,23 +2,16 @@
 
 namespace Miko\LaravelLatte\Tests;
 
+use Latte\CompileException;
+use Nette\Utils\Finder;
 use Ssddanbrown\AssertHtml\HtmlTest;
 use Symfony\Component\VarDumper\VarDumper;
 
-class LaravelLatteTest extends TestCase
+class ExtensionTest extends TestCase
 {
-    public function test_latte_implemented(): void
-    {
-        $output = view('implemented', ['foo' => 'Bar'])->render();
-
-        $expected = $this->getExpected('implemented');
-
-        $this->assertEquals($expected, $output);
-    }
-
     public function test_csrf_tag(): void
     {
-        $output = view('csrf-tag')->render();
+        $output = view('extension/csrf-tag')->render();
 
         $expected = $this->getExpected('csrf-tag');
 
@@ -27,7 +20,7 @@ class LaravelLatteTest extends TestCase
 
     public function test_method_tag(): void
     {
-        $output = view('method-tag', ['method' => 'PUT'])->render();
+        $output = view('extension/method-tag', ['method' => 'PUT'])->render();
 
         $expected = $this->getExpected('method-tag');
 
@@ -39,7 +32,7 @@ class LaravelLatteTest extends TestCase
         $this->expectException(\Latte\CompileException::class);
         $this->expectExceptionMessage('Missing arguments in {method}');
 
-        view('method-tag-without-parameter')->render();
+        view('extension/method-tag-without-parameter')->render();
     }
 
     public function test_method_tag_unsupported_method(): void
@@ -47,7 +40,7 @@ class LaravelLatteTest extends TestCase
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Only PUT, PATCH and DELETE methods are possible via method spoofing');
 
-        view('method-tag', ['method' => 'FOO'])->render();
+        view('extension/method-tag', ['method' => 'FOO'])->render();
     }
 
     public function test_method_tag_get_method(): void
@@ -55,14 +48,14 @@ class LaravelLatteTest extends TestCase
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Do not use GET and POST method via method spoofing. Use the "method" form attribute instead.');
 
-        view('method-tag', ['method' => 'GET'])->render();
+        view('extension/method-tag', ['method' => 'GET'])->render();
     }
 
     public function test_asset_tag(): void
     {
         $time = filemtime(public_path('style.css'));
 
-        $output = view('asset-tag')->render();
+        $output = view('extension/asset-tag')->render();
 
         $this->assertEquals('/style.css?m=' . $time, $output);
     }
@@ -72,14 +65,14 @@ class LaravelLatteTest extends TestCase
         $this->expectException(\Latte\CompileException::class);
         $this->expectExceptionMessage('Missing arguments in {asset}');
 
-        view('asset-tag-without-parameter')->render();
+        view('extension/asset-tag-without-parameter')->render();
     }
 
     public function test_n_src_tag(): void
     {
         $time = filemtime(public_path('script.js'));
 
-        $output = view('n-src-tag')->render();
+        $output = view('extension/n-src-tag')->render();
 
         $this->assertEquals('<script src="/script.js?m=' . $time . '" async></script>', $output);
     }
@@ -104,50 +97,13 @@ class LaravelLatteTest extends TestCase
         $response->assertContent($expected);
     }
 
-    public function test_livewire_tag(): void
-    {
-        $html = new HtmlTest(view('livewire-tag')->render());
-
-        $html->assertElementContains('h1', 'My component');
-        $html->assertElementExists('div[wire\:snapshot]');
-        $html->assertElementExists('div[wire\:effects]');
-        $html->assertElementExists('div[wire\:id]');
-        $html->assertElementContains('div', 'Variable lorem from my component is ipsum');
-    }
-
-    public function test_livewire_styles_tag(): void
-    {
-        $html = new HtmlTest(view('livewire-styles-tag')->render());
-        $html->assertElementExists('html head style');
-    }
-
-    public function test_livewire_scripts_tag(): void
-    {
-        $html = new HtmlTest(view('livewire-scripts-tag')->render());
-
-        $html->assertElementExists('html body script');
-        $html->assertElementExists('html body script[src*=livewire]');
-        $html->assertElementExists('html body script[data-csrf]');
-        $html->assertElementExists('html body script[data-update-uri]');
-        $html->assertElementExists('html body script[data-navigate-once]');
-    }
-
-    public function test_livewire_script_config_tag(): void
-    {
-        $html = new HtmlTest(view('livewire-script-config-tag')->render());
-
-        $html->assertElementExists('html body script');
-        $html->assertElementExists('html body script[data-navigate-once]');
-        $html->assertElementContains('html body script', 'window.livewireScriptConfig = {"csrf":null,"uri":"\/livewire\/update","progressBar":"","nonce":""};');
-    }
-
     public function test_dump_tag(): void
     {
         VarDumper::setHandler(function($var, $label){
             echo '<pre>' . var_export($var, true) . '</pre>';
         });
 
-        $output = view('dump-tag')->render();
+        $output = view('extension/dump-tag')->render();
 
         $this->assertEquals("<pre>'Dumped variable'</pre>", $output);
     }

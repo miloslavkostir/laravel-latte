@@ -6,12 +6,12 @@ class TestController
 {
     public function link($id)
     {
-        return view('link-tag');
+        return view('extension.link-tag');
     }
 
     public function nHref($id)
     {
-        return view('n-href-tag');
+        return view('extension.n-href-tag');
     }
 
     public function index()
