@@ -6,10 +6,11 @@ namespace Miko\LaravelLatte;
 
 use Illuminate\Foundation\Application;
 use Latte\Engine as Latte;
+use Livewire\LivewireManager;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
-    public function register(): void
+    public function boot(): void
     {
         // Latte
         $this->app->singleton(Latte::class, function ($app) {
@@ -31,6 +32,9 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         $latte->setAutoRefresh($config->get('app.debug'));
 
         $latte->addExtension(new Extension());
+        if ($app->has(LivewireManager::class)) {
+            $latte->addExtension(new LivewireExtension());
+        }
 
         return $latte;
     }
