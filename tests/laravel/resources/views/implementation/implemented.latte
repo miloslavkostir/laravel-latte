@@ -1,14 +1,18 @@
-Hello {$foo}
-{foreach [1,2,3,4,5,6,7,8,9,10] as $num}
-    {if $num % 2 === 0}
-        {$num}
-    {/if}
-{/foreach}
-{var $x = true}
-<div n:if="$x">x is true</div>
+{layout layout.latte}
+{block content}
 
-{define myBlock}
-    <p>This is my block with some variable {$y}</p>
-{/define}
+    Hello {$foo}
+    {foreach [1,2,3,4,5,6,7,8,9,10] as $num}
+        {if $num % 2 === 0}
+            {$num}
+        {/if}
+    {/foreach}
 
-{include myBlock y => 'foobar'}
+    {var $x = true}
+    <div n:if="$x">x is true</div>
+
+    {define myBlock}
+        <p>This is my block with some variable {$y}</p>
+    {/define}
+
+    {include myBlock y => 'foobar'}

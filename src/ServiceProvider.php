@@ -28,8 +28,18 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     {
         $config = $this->app['config'];
         $latte = new Latte();
+
         $latte->setTempDirectory($config->get('view.compiled'));
-        $latte->setAutoRefresh($config->get('app.debug'));
+        $latte->setAutoRefresh($config->get('latte.auto_refresh') ?? $config->get('app.debug', true));
+        $latte->setStrictParsing($config->get('latte.strict_parsing', false));
+        $latte->setStrictTypes($config->get('latte.strict_types', false));
+
+        $finder = function (\Latte\Runtime\Template $template) use ($config) {
+            if (!$template->getReferenceType() && $layout = $config->get('latte.layout')) {
+                return $layout;
+            }
+        };
+        $latte->addProvider('coreParentFinder', $finder);
 
         $latte->addExtension(new Extension());
         if ($app->has(LivewireManager::class)) {
