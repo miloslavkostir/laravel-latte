@@ -12,4 +12,11 @@ class ImplementationTest extends TestCase
 
         $this->assertEquals($expected, $output);
     }
+
+    public function test_blade(): void
+    {
+        $output = view('implementation/homepage', ['foo' => 'Bar'])->render();
+
+        $this->assertEquals('Hello Bar', $output);
+    }
 }

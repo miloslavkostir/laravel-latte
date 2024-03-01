@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * To generate unique key for each tag
+ */
+
 declare(strict_types=1);
 
 namespace Miko\LaravelLatte;

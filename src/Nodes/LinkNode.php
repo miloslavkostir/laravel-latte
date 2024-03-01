@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace Miko\LaravelLatte\Nodes;
 
+use Illuminate\Support\Facades\Route;
+use Latte\CompileException;
 use Latte\Compiler\Nodes\Php\Expression\ArrayNode;
 use Latte\Compiler\Nodes\Php\ExpressionNode;
 use Latte\Compiler\Nodes\Php\ModifierNode;
+use Latte\Compiler\Nodes\Php\Scalar\StringNode;
 use Latte\Compiler\Nodes\StatementNode;
 use Latte\Compiler\PrintContext;
 use Latte\Compiler\Tag;
@@ -43,35 +46,62 @@ class LinkNode extends StatementNode
 
     public function print(PrintContext $context): string
     {
-        if ($this->mode === 'href') {
-            $context->beginEscape()->enterHtmlAttribute(null, '"');
-            $res = $context->format(
-                <<<'XX'
-                    echo ' href="'; echo %modify(\Miko\LaravelLatte\Runtime\Link::generate(%node, %node?)) %line; echo '"';
-                    XX,
+        if ($this->destination instanceof StringNode && $this->destination->value === 'this' && empty($this->args->items)) {
+            $expression = 'echo %modify(url()->current()) %line;';
+            $params = [
+                $this->modifier,
+                $this->position,
+            ];
+        } elseif ($this->destination instanceof StringNode && $this->destination->value !== 'this') {
+            list($controller, $method) = $this->findControllerAndMethod($this->destination->value);
+            $expression = "echo %modify(action(['$controller', '$method'], %node)) %line;";
+            $params = [
+                $this->modifier,
+                $this->args,
+                $this->position,
+            ];
+        } else {
+            $expression = 'echo %modify(\Miko\LaravelLatte\Runtime\Link::generate(%node, %node?)) %line;';
+            $params = [
                 $this->modifier,
                 $this->destination,
                 $this->args,
                 $this->position,
-            );
+            ];
+        }
+
+        if ($this->mode === 'href') {
+            $context->beginEscape()->enterHtmlAttribute(null, '"');
+            $res = $context->format("echo ' href=\"'; ".$expression." echo '\"';", ...$params);
             $context->restoreEscape();
             return $res;
         }
 
-        return $context->format(
-            'echo %modify(\Miko\LaravelLatte\Runtime\Link::generate(%node, %node?)) %line;',
-            $this->modifier,
-            $this->destination,
-            $this->args,
-            $this->position,
-        );
+        return $context->format($expression, ...$params);
     }
-
 
     public function &getIterator(): \Generator
     {
         yield $this->destination;
         yield $this->args;
         yield $this->modifier;
+    }
+
+    private function findControllerAndMethod(string $name): array
+    {
+        $exploded = explode('@', $name);
+        if (count($exploded) === 1) {
+            if (($current = Route::currentRouteAction()) === null) {
+                throw new CompileException('Cannot find route action for "' . $name . '"', $this->position);
+            }
+            list($controller, ) = explode('@', $current);
+            $method = $name;
+        } else {
+            $controller = class_exists('App\\Http\\Controllers\\' . $exploded[0] . 'Controller')
+                ? 'App\\Http\\Controllers\\' . $exploded[0] . 'Controller'
+                : 'App\\Http\\Controllers\\' . $exploded[0];
+            $method = $exploded[1] ?: 'index';
+        }
+        return [$controller, $method];
     }
 }

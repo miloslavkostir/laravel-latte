@@ -15,3 +15,6 @@
 {var $params = ['foo' => 'bar', 'lang' => 'cs', 'id' => 1]}
 <a n:href="Test@detail, ...$params" class="foo">Click me</a>
 <a n:href="Test@detail, (expand) $params" class="foo">Click me</a>
+{var $action = 'Test@detail'}
+<a n:href="$action" class="foo">Click me</a>
+<a n:href="$action, ...$params" class="foo">Click me</a>

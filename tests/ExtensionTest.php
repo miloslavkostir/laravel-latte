@@ -2,9 +2,6 @@
 
 namespace Miko\LaravelLatte\Tests;
 
-use Latte\CompileException;
-use Nette\Utils\Finder;
-use Ssddanbrown\AssertHtml\HtmlTest;
 use Symfony\Component\VarDumper\VarDumper;
 
 class ExtensionTest extends TestCase
@@ -53,11 +50,17 @@ class ExtensionTest extends TestCase
 
     public function test_asset_tag(): void
     {
-        $time = filemtime(public_path('style.css'));
+        $time1 = filemtime(public_path('style.css'));
+        $time2 = filemtime(public_path('script.js'));
 
-        $output = view('extension/asset-tag')->render();
+        $output = view('extension/asset-tag', ['src' => '/script.js'])->render();
 
-        $this->assertEquals('/style.css?m=' . $time, $output);
+        $expected = <<<HTML
+        /style.css?m=$time1
+        /script.js?m=$time2
+        HTML;
+
+        $this->assertEquals($expected, $output);
     }
 
     public function test_asset_tag_without_parameter(): void
@@ -70,11 +73,17 @@ class ExtensionTest extends TestCase
 
     public function test_n_src_tag(): void
     {
-        $time = filemtime(public_path('script.js'));
+        $time1 = filemtime(public_path('style.css'));
+        $time2 = filemtime(public_path('script.js'));
 
-        $output = view('extension/n-src-tag')->render();
+        $output = view('extension/n-src-tag', ['src' => '/script.js'])->render();
 
-        $this->assertEquals('<script src="/script.js?m=' . $time . '" async></script>', $output);
+        $expected = <<<HTML
+        <script src="/script.js?m=$time1" async></script>
+        <script src="/script.js?m=$time2" async></script>
+        HTML;
+
+        $this->assertEquals($expected, $output);
     }
 
     public function test_link_tag(): void
