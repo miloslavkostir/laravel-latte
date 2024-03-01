@@ -7,6 +7,7 @@ use Illuminate\Encryption\Encrypter;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
+use Tracy\Debugger;
 
 class TestCase extends BaseTestCase
 {
@@ -21,7 +22,10 @@ class TestCase extends BaseTestCase
         $app['config']->set('app.key', Encrypter::generateKey('dek-apps-laravel-latte'));
         $app['config']->set('app.debug', true);
         $app['config']->set('session.driver', 'array');
-        //$app['config']->set('view.compiled', self::TEMP_DIR);
+
+        if (TestEnvConfig::get()->tracy) {
+            Debugger::enable(Debugger::Development);
+        }
 
         return $app;
     }
@@ -56,5 +60,11 @@ class TestCase extends BaseTestCase
         FileSystem::createDir(self::TEMP_DIR);
 
         parent::setUp();
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        TestEnvConfig::get()->defaults();
     }
 }

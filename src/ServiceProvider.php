@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Miko\LaravelLatte;
 
 use Illuminate\Foundation\Application;
+use Latte\Bridges\Tracy\TracyExtension;
 use Latte\Engine as Latte;
 use Latte\Runtime\Template;
 use Livewire\LivewireManager;
@@ -38,26 +39,10 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
     protected function createLatte(Application $app): Latte
     {
-        $config = $this->app['config'];
         $latte = new Latte();
 
-        $compiled = $config->get('latte.compiled') ?? $config->get('view.compiled');
-        $latte->setTempDirectory($compiled ?: null);
-        $latte->setAutoRefresh($config->get('latte.auto_refresh') ?? $config->get('app.debug', false));
-        $latte->setStrictParsing($config->get('latte.strict_parsing'));
-        $latte->setStrictTypes($config->get('latte.strict_types'));
-
-        $finder = function (Template $template) use ($config) {
-            if (!$template->getReferenceType() && $layout = $config->get('latte.layout')) {
-                return $layout;
-            }
-        };
-        $latte->addProvider('coreParentFinder', $finder);
-
-        $latte->addExtension(new Extension());
-        if ($app->has(LivewireManager::class)) {
-            $latte->addExtension(new LivewireExtension());
-        }
+        $this->configure($latte);
+        $this->extensions($latte);
 
         return $latte;
     }
@@ -65,5 +50,33 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     protected function createEngine(): LatteEngine
     {
         return new LatteEngine($this->app[Latte::class]);
+    }
+
+    protected function configure(Latte $latte): void
+    {
+        $config = $this->app['config'];
+        $compiled = $config->get('latte.compiled') ?? $config->get('view.compiled');
+        $latte->setTempDirectory($compiled ?: null);
+        $latte->setAutoRefresh($config->get('latte.auto_refresh') ?? $config->get('app.debug', false));
+        $latte->setStrictParsing($config->get('latte.strict_parsing'));
+        $latte->setStrictTypes($config->get('latte.strict_types'));
+
+        $finder = function (Template $template) {
+            if (!$template->getReferenceType() && $layout = $this->app['config']->get('latte.layout')) {
+                return $layout;
+            }
+        };
+        $latte->addProvider('coreParentFinder', $finder);
+    }
+
+    protected function extensions(Latte $latte): void
+    {
+        $latte->addExtension(new Extension());
+        if ($this->app->has(LivewireManager::class)) {
+            $latte->addExtension(new LivewireExtension());
+        }
+        if (class_exists('Tracy\Debugger') && \Tracy\Debugger::isEnabled()) {
+            $latte->addExtension(new TracyExtension());
+        }
     }
 }

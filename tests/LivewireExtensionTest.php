@@ -2,6 +2,7 @@
 
 namespace Miko\LaravelLatte\Tests;
 
+use Latte\CompileException;
 use Ssddanbrown\AssertHtml\HtmlTest;
 
 class LivewireExtensionTest extends TestCase
@@ -15,6 +16,18 @@ class LivewireExtensionTest extends TestCase
         $html->assertElementcount('div[wire\:effects]', 4);
         $html->assertElementcount('div[wire\:id]', 4);
         $html->assertElementContains('div', 'Variable lorem from my component is ipsum');
+    }
+
+    public function test_livewire_tag_unavailable(): void
+    {
+        // Refresh app without livewire
+        TestEnvConfig::get()->livewire = false;
+        $this->refreshApplication();
+
+        $this->expectException(CompileException::class);
+        $this->expectExceptionMessage('Unexpected tag {livewire}');
+
+        view('livewire/livewire-tag', ['name' => 'my-component'])->render();
     }
 
     public function test_multiple_livewire_tag(): void

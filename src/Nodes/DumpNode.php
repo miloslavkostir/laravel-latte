@@ -10,7 +10,7 @@ class DumpNode extends \Latte\Essential\Nodes\DumpNode
 {
     public function print(PrintContext $context): string
     {
-        if (class_exists('Tracy\Debugger')) {
+        if (class_exists('Tracy\Debugger') && \Tracy\Debugger::isEnabled()) {
             return parent::print($context);
         }
         return $this->expression

@@ -106,8 +106,12 @@ class ExtensionTest extends TestCase
         $response->assertContent($expected);
     }
 
-    public function test_dump_tag(): void
+    public function test_dump_tag_symfony(): void
     {
+        // Refresh app without tracy
+        TestEnvConfig::get()->tracy = false;
+        $this->refreshApplication();
+
         VarDumper::setHandler(function($var, $label){
             echo '<pre>' . var_export($var, true) . '</pre>';
         });
@@ -115,5 +119,20 @@ class ExtensionTest extends TestCase
         $output = view('extension/dump-tag')->render();
 
         $this->assertEquals("<pre>'Dumped variable'</pre>", $output);
+    }
+
+    public function test_dump_tag_tracy(): void
+    {
+        // Refresh app with tracy
+        TestEnvConfig::get()->tracy = true;
+        $this->refreshApplication();
+
+        VarDumper::setHandler(function($var, $label){
+            echo '<pre>' . var_export($var, true) . '</pre>';
+        });
+
+        $output = view('extension/dump-tag')->render();
+
+        $this->assertEquals("", $output);
     }
 }
