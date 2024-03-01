@@ -31,7 +31,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         });
 
         // LatteEngine
-        $factory = $this->app['view'];
+        $factory = $this->app->get('view');
         $factory->addExtension('latte', 'latte', function () {
             return $this->createEngine();
         });
@@ -49,20 +49,20 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
     protected function createEngine(): LatteEngine
     {
-        return new LatteEngine($this->app[Latte::class]);
+        return new LatteEngine($this->app->get(Latte::class));
     }
 
     protected function configure(Latte $latte): void
     {
-        $config = $this->app['config'];
+        $config = $this->app->get('config');
         $compiled = $config->get('latte.compiled') ?? $config->get('view.compiled');
         $latte->setTempDirectory($compiled ?: null);
         $latte->setAutoRefresh($config->get('latte.auto_refresh') ?? $config->get('app.debug', false));
         $latte->setStrictParsing($config->get('latte.strict_parsing'));
         $latte->setStrictTypes($config->get('latte.strict_types'));
 
-        $finder = function (Template $template) {
-            if (!$template->getReferenceType() && $layout = $this->app['config']->get('latte.layout')) {
+        $finder = function (Template $template) use ($config) {
+            if (!$template->getReferenceType() && $layout = $config->get('latte.layout')) {
                 return $layout;
             }
         };

@@ -8,7 +8,7 @@ use Latte\Engine;
 
 class LatteEngine implements \Illuminate\Contracts\View\Engine
 {
-    private $latte;
+    private Engine $latte;
 
     public function __construct(Engine $latte)
     {

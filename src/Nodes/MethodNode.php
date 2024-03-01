@@ -13,11 +13,11 @@ class MethodNode extends StatementNode
 {
     private ExpressionNode $method;
 
-    public static function create(Tag $tag): ?static
+    public static function create(Tag $tag): static
     {
         $tag->outputMode = $tag::OutputKeepIndentation;
         $tag->expectArguments();
-        $node = $tag->node = new self();
+        $node = $tag->node = new static();
         $node->method = $tag->parser->parseUnquotedStringOrExpression();
         return $node;
     }

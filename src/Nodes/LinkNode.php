@@ -71,7 +71,7 @@ class LinkNode extends StatementNode
         }
 
         if ($this->mode === 'href') {
-            $context->beginEscape()->enterHtmlAttribute(null, '"');
+            $context->beginEscape()->enterHtmlAttribute();
             $res = $context->format("echo ' href=\"'; ".$expression." echo '\"';", ...$params);
             $context->restoreEscape();
             return $res;

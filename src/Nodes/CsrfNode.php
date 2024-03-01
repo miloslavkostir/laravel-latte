@@ -10,9 +10,9 @@ use Latte\Compiler\Tag;
 
 class CsrfNode extends StatementNode
 {
-    public static function create(Tag $tag): ?static
+    public static function create(Tag $tag): static
     {
-        $node = $tag->node = new self();
+        $node = $tag->node = new static();
         return $node;
     }
 

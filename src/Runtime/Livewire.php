@@ -16,17 +16,17 @@ class Livewire
         return $livewire->mount($name, $params, $key);
     }
 
-    public static function styles(array $options = [])
+    public static function styles(array $options = []): array|string|null
     {
         return FrontendAssets::styles($options);
     }
 
-    public static function scripts(array $options = [])
+    public static function scripts(array $options = []): array|string|null
     {
         return FrontendAssets::scripts($options);
     }
 
-    public static function scriptConfig(array $options = [])
+    public static function scriptConfig(array $options = []): array|string|null
     {
         return FrontendAssets::scriptConfig($options);
     }

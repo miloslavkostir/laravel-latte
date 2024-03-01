@@ -17,11 +17,11 @@ class LivewireNode extends StatementNode
     private ExpressionNode $name;
     private ArrayNode $args;
 
-    public static function create(Tag $tag): ?static
+    public static function create(Tag $tag): static
     {
         $tag->outputMode = $tag::OutputKeepIndentation;
         $tag->expectArguments();
-        $node = $tag->node = new self();
+        $node = $tag->node = new static();
         $node->name = $tag->parser->parseUnquotedStringOrExpression();
         $tag->parser->stream->tryConsume(',');
         $node->args = $tag->parser->parseArguments();
@@ -59,10 +59,10 @@ class LivewireNode extends StatementNode
         return DeterministicKeys::generate('lw');
     }
 
-    public static function toValue($args): mixed
+    public static function toValue(ExpressionNode $node): mixed
     {
         try {
-            return NodeHelpers::toValue($args, constants: true);
+            return NodeHelpers::toValue($node, constants: true);
         } catch (\InvalidArgumentException) {
             return null;
         }

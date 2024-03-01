@@ -1,0 +1,26 @@
+parameters:
+    level: 8
+    paths:
+        - src
+    excludePaths:
+    checkMissingIterableValueType: false
+    checkGenericClassInNonGenericObjectType: false
+    ignoreErrors:
+        - '#Unsafe usage of new static\(\)\.#'  # Singletons
+        - '#Cannot call method current\(\) on Illuminate\\Contracts\\Routing\\UrlGenerator\|string\.#' # I can because url() without arguments is UrlGenerator
+        - '#Cannot access property \$(attributes|children) on Latte\\Compiler\\Nodes\\[a-zA-Z\\]+\|null.#'
+        -
+            message: '#If condition is always false\.#'
+            path: src/Nodes/*
+#        -
+#            message: '#Method Miko\\LaravelLatte\\Nodes\\[a-zA-Z]+::getIterator\(\) should return Generator<mixed, Latte\\Compiler\\Node, mixed, mixed> but return statement is missing\.#'
+#            path: src/Nodes/*
+        -
+            message: '#Generator expects value type Latte\\Compiler\\Node, null given\.#'
+            path: src/Nodes/*
+        -
+            message: '#Access to an undefined property Latte\\Compiler\\Node::\$value.#'
+            path: src/Nodes/LivewireNode.php
+        -
+            message: '#Variable \$current might not be defined\.#'
+            path: src/Runtime/Link.php

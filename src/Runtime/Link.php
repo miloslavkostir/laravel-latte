@@ -24,7 +24,7 @@ class Link
 
         if (count($array) === 1) {
             // 'this' with parameters or the name of the method - find out the controller and method from the current action
-            list($controller, $method) = explode('@', $current);
+            list($controller, $method) = explode('@', (string) $current);
             if ($name !== 'this') {
                 // $name is the name of the method - override
                 $method = $name;

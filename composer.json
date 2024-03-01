@@ -19,7 +19,8 @@
         "livewire/livewire": "^3.4",
         "phpunit/phpunit": "^10.0",
         "ssddanbrown/asserthtml": "^3.0",
-        "tracy/tracy": "^2.10"
+        "tracy/tracy": "^2.10",
+        "phpstan/phpstan": "^1.10"
     },
     "autoload": {
         "psr-4": {

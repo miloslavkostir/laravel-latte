@@ -13,10 +13,10 @@ class LivewireScriptsNode extends StatementNode
 {
     private ArrayNode $args;
 
-    public static function create(Tag $tag): ?static
+    public static function create(Tag $tag): static
     {
         $tag->outputMode = $tag::OutputKeepIndentation;
-        $node = $tag->node = new self();
+        $node = $tag->node = new static();
         $node->args = $tag->parser->parseArguments();
         return $node;
     }

@@ -44,7 +44,7 @@ class AssetNode extends StatementNode
     public function print(PrintContext $context): string
     {
         if ($this->mode === 'src') {
-            $context->beginEscape()->enterHtmlAttribute(null, '"');
+            $context->beginEscape()->enterHtmlAttribute();
             $res = $context->format(
                 <<<'XX'
                     echo ' src="'; echo %modify(\Miko\LaravelLatte\Runtime\Asset::generate(%node)) %line; echo '"';
