@@ -6,6 +6,7 @@ use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Nette\Utils\FileSystem;
+use Nette\Utils\Finder;
 
 class TestCase extends BaseTestCase
 {
@@ -18,7 +19,7 @@ class TestCase extends BaseTestCase
         $app->make(Kernel::class)->bootstrap();
 
         $app['config']->set('app.key', Encrypter::generateKey('dek-apps-laravel-latte'));
-        $app['config']->set('debug', true);
+        $app['config']->set('app.debug', true);
         $app['config']->set('session.driver', 'array');
         //$app['config']->set('view.compiled', self::TEMP_DIR);
 
@@ -28,6 +29,25 @@ class TestCase extends BaseTestCase
     protected function getExpected(string $view): string
     {
         return file_get_contents(__DIR__ . '/expected/' . $view . '.html');
+    }
+
+    protected function findCompiled(string $view, string $dir = self::TEMP_DIR): ?string
+    {
+        $view = str_replace(['.','/'], '-', $view);
+        $finder = Finder::findFiles("*-$view.latte--*.php")->in($dir);
+        $files = $finder->collect();
+        return $files[0] ?? null;
+    }
+
+    protected function readDirectory(string $dir = self::TEMP_DIR): array
+    {
+        $dir = dir(self::TEMP_DIR);
+        $files = [];
+        while ($file = $dir->read()) {
+            if ($file === '.' || $file === '..') continue;
+            $files[] = $file;
+        }
+        return $files;
     }
 
     protected function setUp(): void

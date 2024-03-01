@@ -6,12 +6,24 @@ namespace Miko\LaravelLatte;
 
 use Illuminate\Foundation\Application;
 use Latte\Engine as Latte;
+use Latte\Runtime\Template;
 use Livewire\LivewireManager;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
+    public function register(): void
+    {
+        $this->mergeConfigFrom(
+            __DIR__ . '/../config/latte.php', 'latte'
+        );
+    }
+
     public function boot(): void
     {
+        $this->publishes([
+            __DIR__ . '/../config/latte.php' => config_path('latte.php'),
+        ]);
+
         // Latte
         $this->app->singleton(Latte::class, function ($app) {
             return $this->createLatte($app);
@@ -24,17 +36,18 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         });
     }
 
-    private function createLatte(Application $app): Latte
+    protected function createLatte(Application $app): Latte
     {
         $config = $this->app['config'];
         $latte = new Latte();
 
-        $latte->setTempDirectory($config->get('view.compiled'));
-        $latte->setAutoRefresh($config->get('latte.auto_refresh') ?? $config->get('app.debug', true));
-        $latte->setStrictParsing($config->get('latte.strict_parsing', false));
-        $latte->setStrictTypes($config->get('latte.strict_types', false));
+        $compiled = $config->get('latte.compiled') ?? $config->get('view.compiled');
+        $latte->setTempDirectory($compiled ?: null);
+        $latte->setAutoRefresh($config->get('latte.auto_refresh') ?? $config->get('app.debug', false));
+        $latte->setStrictParsing($config->get('latte.strict_parsing'));
+        $latte->setStrictTypes($config->get('latte.strict_types'));
 
-        $finder = function (\Latte\Runtime\Template $template) use ($config) {
+        $finder = function (Template $template) use ($config) {
             if (!$template->getReferenceType() && $layout = $config->get('latte.layout')) {
                 return $layout;
             }
@@ -49,7 +62,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         return $latte;
     }
 
-    private function createEngine(): LatteEngine
+    protected function createEngine(): LatteEngine
     {
         return new LatteEngine($this->app[Latte::class]);
     }
