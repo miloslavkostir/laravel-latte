@@ -31,6 +31,11 @@
         }
     },
     "extra": {
+        "laravel": {
+            "providers": [
+                "Miko\\LaravelLatte\\ServiceProvider"
+            ]
+        },
         "branch-alias": {
             "dev-master": "3.x-dev"
         }

@@ -9,13 +9,17 @@ Extends the Laravel framework with the templating engine [Latte](https://latte.n
 $ composer require miko/laravel-latte
 ```
 
-## Implementation
-
-Register `Miko\LaravelLatte\ServiceProvider` in `bootstrap/providers.php`
-
 Then the templating engine is used according to the file extension:
 - `*.blade.php` - [Blade (Laravel default)](https://laravel.com/docs/blade)
 - `*.latte` - [Latte](https://latte.nette.org)
+
+## Configuration
+
+Publish config file into `config/latte.php`:
+```html
+$ php artisan vendor:publish --provider="Miko\LaravelLatte\ServiceProvider"
+```
+Follow the instructions in the config file.
 
 ## Tags
 
