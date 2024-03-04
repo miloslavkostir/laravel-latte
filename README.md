@@ -21,13 +21,13 @@ $ php artisan vendor:publish --provider="Miko\LaravelLatte\ServiceProvider"
 ```
 Follow the instructions in the config file.
 
-## Tags
+## Extension
 
 See https://latte.nette.org/tags
 
 And additional:
 
-### `link` and `n:href`
+### Tags `link` and `n:href`
 
 Similar to [tags in Nette](https://doc.nette.org/en/application/creating-links#toc-in-the-presenter-template)
 except that the separator berween controller and method is not `:` but `@` and the default method is not `default` but `index` according to the Laravel conventions.
@@ -69,7 +69,7 @@ template:
 ```
 At address `mysite.com/users/permissions/1/2` generates link `mysite.com/users/permissions/1/2?sort=date`
 
-### `asset` and `n:src`
+### Tags `asset` and `n:src`
 
 Adds the `m` parameter to the URL with the timestamp of the last file change. Every time the file is changed, it will be reloaded
 and there is no need to clear the browser cache:
@@ -79,7 +79,7 @@ and there is no need to clear the browser cache:
 <img n:src="/imgs/some-image.png">
 ```
 
-### `csrf`
+### Tag `csrf`
 
 Generates hidden input `_token` in form with CSRF token https://laravel.com/docs/csrf#preventing-csrf-requests
 ```html
@@ -91,7 +91,7 @@ Generates hidden input `_token` in form with CSRF token https://laravel.com/docs
 </form>
 ```
 
-### `method`
+### Tag `method`
 
 Generates a hidden input `_method` in the form for [Form Method Spoofing](https://laravel.com/docs/routing#form-method-spoofing)
 ```html
@@ -100,7 +100,7 @@ Generates a hidden input `_method` in the form for [Form Method Spoofing](https:
 </form>
 ```
 
-### `livewire`, `livewireStyles`, `livewireScripts` a `livewireScriptConfig`
+### Tags `livewire`, `livewireStyles`, `livewireScripts` a `livewireScriptConfig`
 **🧪 Experimental**   
 Tags for [Livewire](https://livewire.laravel.com/). They are only available if livewire is implemented.
 ```html
@@ -117,3 +117,46 @@ Tags for [Livewire](https://livewire.laravel.com/). They are only available if l
 </body>
 </html>
 ```
+
+### Components
+An object implementing `Mike\LaravelLatte\IComponent` can be rendered in template:
+```php
+namespace App\View\Components;
+
+use Illuminate\View\View;
+use Miko\LaravelLatte\IComponent;
+
+class Alert extends Component
+{
+    private array $params = [];
+
+    /**
+     * Get some services from service container
+     */
+    public function __construct(private SomeService $someService)
+    {
+    }
+
+    /**
+     * Get variables from template
+     */
+    public function init(...$params): void
+    {
+        $this->params = $params;
+    }
+
+    /**
+     * Get the view / contents that represent the component.
+     */
+    public function render(): View|string
+    {
+        return view('components.alert', $this->params);
+    }
+}
+```
+View `components.alert`:
+```html
+{x alert type => error, message => $message}
+```
+Root namespace of components is set in config (`latte.components_namespace`) 
+and is `App\View\Components` by default.
