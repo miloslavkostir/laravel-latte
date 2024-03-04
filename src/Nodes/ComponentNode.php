@@ -12,6 +12,7 @@ use Latte\Compiler\Nodes\StatementNode;
 use Latte\Compiler\PrintContext;
 use Latte\Compiler\Tag;
 use Miko\LaravelLatte\DeterministicKeys;
+use Miko\LaravelLatte\Runtime\Component;
 
 class ComponentNode extends StatementNode
 {
@@ -31,12 +32,24 @@ class ComponentNode extends StatementNode
 
     public function print(PrintContext $context): string
     {
-        return $context->format(
-            "echo \Miko\LaravelLatte\Runtime\Component::generate(%node, %node) %line;",
-            $this->name,
-            $this->args,
-            $this->position
-        );
+        if ($this->name instanceof StringNode) {
+            // precompile
+            $name = Component::composeName($this->name->value);
+            $expression = "echo \Miko\LaravelLatte\Runtime\Component::generate('$name', %node) %line;";
+            $params = [
+                $this->args,
+                $this->position,
+            ];
+        } else {
+            $expression = "echo \Miko\LaravelLatte\Runtime\Component::generate(%node, %node) %line;";
+            $params = [
+                $this->name,
+                $this->args,
+                $this->position,
+            ];
+        }
+
+        return $context->format($expression, ...$params);
     }
 
     public function &getIterator(): \Generator

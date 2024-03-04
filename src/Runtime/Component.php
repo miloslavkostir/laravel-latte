@@ -5,21 +5,26 @@ declare(strict_types=1);
 namespace Miko\LaravelLatte\Runtime;
 
 use Illuminate\View\View;
+use Latte\CompileException;
 use Miko\LaravelLatte\IComponent;
 
 class Component
 {
     public static function generate(string $name, array $params = []): View|string
     {
-        $name = self::composeName($name);
-
-        /** @var IComponent $renderable */
-        $renderable = app($name);
-        $renderable->init(...$params);
-        return $renderable->render();
+        if (! class_exists($name)) {
+            $name = self::composeName($name);
+        }
+        $component = app($name);
+        if (! $component instanceof IComponent) {
+            throw new CompileException('Component must implement ' . IComponent::class . ' interface');
+        }
+        /** @var IComponent $component */
+        $component->init(...$params);
+        return $component->render();
     }
 
-    private static function composeName(string $name): string
+    public static function composeName(string $name): string
     {
         $splitByDash = preg_split('#-#', $name);
         if (count($splitByDash) > 1) {

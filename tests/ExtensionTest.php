@@ -138,8 +138,6 @@ class ExtensionTest extends TestCase
 
     public function test_component_tag(): void
     {
-        //$this->app->bind('my-component', \Miko\LaravelLatte\Tests\laravel\app\MyComponent::class);
-
         $output = view('component/x-tag', ['name' => 'my-component'])->render();
 
         $expected = <<<HTML
