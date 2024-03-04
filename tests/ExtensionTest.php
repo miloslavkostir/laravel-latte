@@ -135,4 +135,23 @@ class ExtensionTest extends TestCase
 
         $this->assertEquals("", $output);
     }
+
+    public function test_component_tag(): void
+    {
+        //$this->app->bind('my-component', \Miko\LaravelLatte\Tests\laravel\app\MyComponent::class);
+
+        $output = view('component/x-tag', ['name' => 'my-component'])->render();
+
+        $expected = <<<HTML
+        <h1>Renderable object component </h1>
+        <h1>Renderable object component </h1>
+        <h1>Renderable object component bar</h1>
+        <h1>Renderable object component bar</h1>
+        <h1>Renderable object component bar</h1>
+        Render as string
+        Nested component
+        HTML;
+
+        $this->assertEquals($expected, $output);
+    }
 }

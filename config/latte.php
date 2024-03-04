@@ -84,4 +84,16 @@ return [
 
     'strict_types' => false,
 
+    /*
+    |---------------------------------------------------------------------------
+    | Components Namespace
+    |---------------------------------------------------------------------------
+    |
+    | This value sets the root class namespace for component classes in
+    | your application.
+    |
+    */
+
+    'components_namespace' => 'App\\View\\Components',
+
 ];

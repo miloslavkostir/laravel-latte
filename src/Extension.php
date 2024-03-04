@@ -18,6 +18,7 @@ class Extension extends LatteExtension
             'csrf' => [Nodes\CsrfNode::class, 'create'],
             'method' => [Nodes\MethodNode::class, 'create'],
             'dump' => [Nodes\DumpNode::class, 'create'],
+            'x' => [Nodes\ComponentNode::class, 'create'],
         ];
     }
 }
