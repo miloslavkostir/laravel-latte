@@ -53,13 +53,13 @@ class LivewireNode extends StatementNode
             // array index has 'value' {livewire ... key => foo}
             if ('key' === ($value->key->name ?? $value->key->value ?? false)) {
                 unset($this->args->items[$index]);
-                return (string) self::toValue($value->value);
+                return (string) $this->toValue($value->value);
             }
         }
         return DeterministicKeys::generate('lw');
     }
 
-    public static function toValue(ExpressionNode $node): mixed
+    private function toValue(ExpressionNode $node): mixed
     {
         try {
             return NodeHelpers::toValue($node, constants: true);

@@ -9,13 +9,13 @@ class LivewireExtensionTest extends TestCase
 {
     public function test_livewire_tag(): void
     {
-        $html = new HtmlTest(view('livewire/livewire-tag', ['name' => 'my-component'])->render());
+        $html = new HtmlTest(view('livewire/livewire-tag', ['name' => 'livewire-component'])->render());
 
-        $html->assertElementContains('h1', 'My component');
-        $html->assertElementcount('div[wire\:snapshot]', 4);
-        $html->assertElementcount('div[wire\:effects]', 4);
-        $html->assertElementcount('div[wire\:id]', 4);
-        $html->assertElementContains('div', 'Variable lorem from my component is ipsum');
+        $html->assertElementContains('h1', 'Livewire component');
+        $html->assertElementcount('div[wire\:snapshot]', 5);
+        $html->assertElementcount('div[wire\:effects]', 5);
+        $html->assertElementcount('div[wire\:id]', 5);
+        $html->assertElementContains('div', 'Variable lorem from livewire component is ipsum');
     }
 
     public function test_livewire_tag_unavailable(): void
@@ -27,14 +27,14 @@ class LivewireExtensionTest extends TestCase
         $this->expectException(CompileException::class);
         $this->expectExceptionMessage('Unexpected tag {livewire}');
 
-        view('livewire/livewire-tag', ['name' => 'my-component'])->render();
+        view('livewire/livewire-tag', ['name' => 'livewire-component'])->render();
     }
 
     public function test_multiple_livewire_tag(): void
     {
         $html = new HtmlTest(view('livewire/livewire-tags')->render());
 
-        $html->assertElementContains('h1', 'My component multiple');
+        $html->assertElementContains('h1', 'Livewire component multiple');
         $html->assertElementCount('div[wire\:snapshot]', 5);
         $html->assertElementCount('div[wire\:effects]', 5);
         $html->assertElementCount('div[wire\:id]', 5);
@@ -45,7 +45,7 @@ class LivewireExtensionTest extends TestCase
             if (is_int($key)) {
                 $key = 'lw-'.crc32(realpath(resource_path('views/livewire/livewire-tags.latte'))).'-'.$key;
             }
-            return 'echo ' . preg_quote('\Miko\LaravelLatte\Runtime\Livewire') . "::generate\('my-component', \[\], '$key'\) \/\* line $line \*\/";
+            return 'echo ' . preg_quote('\Miko\LaravelLatte\Runtime\Livewire') . "::generate\('livewire-component', \[\], '$key'\) \/\* line $line \*\/";
         };
 
         $this->assertMatchesRegularExpression('#'.$pattern(0, 2).'#', file_get_contents($file));

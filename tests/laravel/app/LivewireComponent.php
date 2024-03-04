@@ -4,12 +4,16 @@ namespace Miko\LaravelLatte\Tests\laravel\app;
 
 use Livewire\Component;
 
-class MyComponent extends Component
+class LivewireComponent extends Component
 {
     public $lorem = 'ipsum';
 
+    public function __construct()
+    {
+    }
+
     public function render()
     {
-        return view('livewire.my-component');
+        return view('livewire.livewire-component');
     }
 }
