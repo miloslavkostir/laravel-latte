@@ -33,7 +33,8 @@ class TestCase extends BaseTestCase
 
     protected function getExpected(string $view): string
     {
-        return file_get_contents(__DIR__ . '/expected/' . $view . '.html');
+        $view = preg_match('#\.[a-z]+$#', $view) ? $view : $view . '.html';
+        return file_get_contents(__DIR__ . '/expected/' . $view);
     }
 
     protected function findCompiled(string $view, string $dir = self::TEMP_DIR): ?string

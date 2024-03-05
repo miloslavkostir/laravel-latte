@@ -93,6 +93,24 @@ class ConfigTest extends TestCase
         $this->assertCount(0, $dir2);
     }
 
+    // latte.xhtml
+
+    public function test_not_configured_xhtml(): void
+    {
+        $xhtml = config('latte.xhtml');
+
+        $this->assertFalse($xhtml);
+    }
+
+    public function test_configured_xhtml(): void
+    {
+        $this->app['config']->set('latte.xhtml', true);
+
+        $xhtml = config('latte.xhtml');
+
+        $this->assertTrue($xhtml);
+    }
+
     // latte.layout
 
     public function test_not_configured_layout(): void

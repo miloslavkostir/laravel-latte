@@ -152,4 +152,19 @@ class ExtensionTest extends TestCase
 
         $this->assertEquals($expected, $output);
     }
+
+    public function test_nl2br_filter_html(): void
+    {
+        $text = <<<TEXT
+            Lorem
+            ipsum
+            dolor sit
+            TEXT;
+
+        $output = view('extension/nl2br-filter', ['foo' => $text])->render();
+
+        $expected = $this->getExpected('nl2br-filter.html');
+
+        $this->assertEquals($expected, $output);
+    }
 }
