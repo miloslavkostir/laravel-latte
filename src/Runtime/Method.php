@@ -6,14 +6,17 @@ namespace Miko\LaravelLatte\Runtime;
 
 class Method
 {
-    public static function generate(string $method): string
+    public static function generate(string $method, bool $xhtml): string
     {
-        $rt = new self();
-        $rt->validateArgument($method);
-        return (string) \method_field($method);
+        self::validateArgument($method);
+        if ($xhtml) {
+            return '<input type="hidden" name="_method" value="'.$method.'" />';
+        } else {
+            return '<input type="hidden" name="_method" value="'.$method.'">';
+        }
     }
 
-    private function validateArgument(string $method): bool
+    private static function validateArgument(string $method): bool
     {
         if (in_array(strtoupper($method), ['GET', 'POST'])) {
             throw new \RuntimeException('Do not use GET and POST method via method spoofing. Use the "method" form attribute instead.');

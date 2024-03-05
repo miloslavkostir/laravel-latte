@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Miko\LaravelLatte\Tests\laravel\app\Nested;
+namespace Miko\LaravelLatte\Tests\laravel\app\View\Components\Nested;
 
 use Illuminate\View\View;
 use Miko\LaravelLatte\IComponent;

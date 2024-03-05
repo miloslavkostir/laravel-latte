@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Miko\LaravelLatte\Tests\laravel\app;
+namespace Miko\LaravelLatte\Tests\laravel\app\View\Components;
 
 use Illuminate\View\View;
 use Miko\LaravelLatte\IComponent;
+use Miko\LaravelLatte\Tests\laravel\app\DISomething;
 
 class MyComponent implements IComponent
 {

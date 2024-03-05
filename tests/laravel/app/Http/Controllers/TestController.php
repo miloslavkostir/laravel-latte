@@ -1,6 +1,6 @@
 <?php
 
-namespace Miko\LaravelLatte\Tests\laravel\app;
+namespace Miko\LaravelLatte\Tests\laravel\app\Http\Controllers;
 
 class TestController
 {

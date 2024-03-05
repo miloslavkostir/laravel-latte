@@ -18,11 +18,12 @@ class CsrfNode extends StatementNode
 
     public function print(PrintContext $context): string
     {
+        $xhtml = config('latte.xhtml') ? 'true' : 'false';
         return $context->format(
-            <<<'XX'
-                echo \Miko\LaravelLatte\Runtime\Csrf::generate() %line;
+            <<<XX
+                echo \Miko\LaravelLatte\Runtime\Csrf::generate($xhtml) %line;
                 XX,
-                $this->position
+            $this->position
         );
     }
 

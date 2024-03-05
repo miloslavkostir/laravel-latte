@@ -24,10 +24,11 @@ class MethodNode extends StatementNode
 
     public function print(PrintContext $context): string
     {
+        $xhtml = config('latte.xhtml') ? 'true' : 'false';
         return $context->format(
-            <<<'XX'
-                echo Miko\LaravelLatte\Runtime\Method::generate(%node) %line;
-            XX,
+            <<<XX
+                echo Miko\LaravelLatte\Runtime\Method::generate(%node, $xhtml) %line;
+                XX,
             $this->method,
             $this->position,
         );

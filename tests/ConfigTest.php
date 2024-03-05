@@ -94,6 +94,7 @@ class ConfigTest extends TestCase
     }
 
     // latte.xhtml
+    // more xhtml tests in ExtensionTest.php
 
     public function test_not_configured_xhtml(): void
     {
@@ -321,5 +322,24 @@ class ConfigTest extends TestCase
         $file = $this->findCompiled('config/strict-types-3');
 
         $this->assertMatchesRegularExpression('#declare\(strict_types=1\)#', file_get_contents($file));
+    }
+
+    // latte.components_namespace
+    // more xhtml tests in ExtensionTest.php
+
+    public function test_not_configured_components_namespace(): void
+    {
+        $componentsNamespace = config('latte.components_namespace');
+
+        $this->assertEquals('App\\View\\Components', $componentsNamespace);
+    }
+
+    public function test_configured_components_namespace(): void
+    {
+        $this->app['config']->set('latte.components_namespace', 'App\\Components');
+
+        $componentsNamespace = config('latte.components_namespace');
+
+        $this->assertEquals('App\\Components', $componentsNamespace);
     }
 }

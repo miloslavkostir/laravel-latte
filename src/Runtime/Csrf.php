@@ -6,8 +6,12 @@ namespace Miko\LaravelLatte\Runtime;
 
 class Csrf
 {
-    public static function generate(): string
+    public static function generate(bool $xhtml): string
     {
-        return (string) \csrf_field();
+        if ($xhtml) {
+            return '<input type="hidden" name="_token" value="'.csrf_token().'" autocomplete="off" />';
+        } else {
+            return '<input type="hidden" name="_token" value="'.csrf_token().'" autocomplete="off">';
+        }
     }
 }

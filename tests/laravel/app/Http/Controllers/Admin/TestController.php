@@ -1,6 +1,6 @@
 <?php
 
-namespace Miko\LaravelLatte\Tests\laravel\app\Admin;
+namespace Miko\LaravelLatte\Tests\laravel\app\Http\Controllers\Admin;
 
 class TestController
 {

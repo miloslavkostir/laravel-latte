@@ -6,20 +6,42 @@ use Symfony\Component\VarDumper\VarDumper;
 
 class ExtensionTest extends TestCase
 {
-    public function test_csrf_tag(): void
+    public function test_csrf_tag_html(): void
     {
         $output = view('extension/csrf-tag')->render();
 
-        $expected = $this->getExpected('csrf-tag');
+        $expected = $this->getExpected('csrf-tag.html');
 
         $this->assertEquals($expected, $output);
     }
 
-    public function test_method_tag(): void
+    public function test_csrf_tag_xhtml(): void
+    {
+        $this->app['config']->set('latte.xhtml', true);
+
+        $output = view('extension/csrf-tag-x')->render();
+
+        $expected = $this->getExpected('csrf-tag.xhtml');
+
+        $this->assertEquals($expected, $output);
+    }
+
+    public function test_method_tag_html(): void
     {
         $output = view('extension/method-tag', ['method' => 'PUT'])->render();
 
-        $expected = $this->getExpected('method-tag');
+        $expected = $this->getExpected('method-tag.html');
+
+        $this->assertEquals($expected, $output);
+    }
+
+    public function test_method_tag_xhtml(): void
+    {
+        $this->app['config']->set('latte.xhtml', true);
+
+        $output = view('extension/method-tag-x', ['method' => 'PUT'])->render();
+
+        $expected = $this->getExpected('method-tag.xhtml');
 
         $this->assertEquals($expected, $output);
     }
@@ -141,13 +163,28 @@ class ExtensionTest extends TestCase
         $output = view('component/x-tag', ['name' => 'my-component'])->render();
 
         $expected = <<<HTML
-        <h1>Renderable object component </h1>
-        <h1>Renderable object component </h1>
-        <h1>Renderable object component bar</h1>
-        <h1>Renderable object component bar</h1>
-        <h1>Renderable object component bar</h1>
+        <h1>My component </h1>
+        <h1>My component </h1>
+        <h1>My component bar</h1>
+        <h1>My component bar</h1>
+        <h1>My component bar</h1>
         Render as string
         Nested component
+        HTML;
+
+        $this->assertEquals($expected, $output);
+    }
+
+    public function test_component_tag_another_namespace(): void
+    {
+        $this->app['config']->set('latte.components_namespace', 'App\\Components');
+
+        $output = view('component/x-tag-config-namespace', ['name' => 'my-second-component'])->render();
+
+        $expected = <<<HTML
+        <h1>My second component </h1>
+        <h1>My second component </h1>
+        <h1>My second component bar</h1>
         HTML;
 
         $this->assertEquals($expected, $output);
