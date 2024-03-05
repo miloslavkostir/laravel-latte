@@ -27,8 +27,15 @@ See https://latte.nette.org/tags
 
 And additional:
 
-### Tags `link` and `n:href`
+### Filter `nl2br` <small>(_bool_ $xhtml = `null`)</small>
 
+```html
+{$text|nl2br}
+{$text|nl2br: true}  <!-- xhtml: true -->
+```
+> Default rendering as xhtml or html can be configured in the config file.
+
+### Tags `link` and `n:href`
 Similar to [tags in Nette](https://doc.nette.org/en/application/creating-links#toc-in-the-presenter-template)
 except that the separator berween controller and method is not `:` but `@` and the default method is not `default` but `index` according to the Laravel conventions.
 Basically this is a simplified call to Laravel's [action()](https://laravel.com/docs/urls#urls-for-controller-actions) helper when
@@ -79,28 +86,27 @@ and there is no need to clear the browser cache:
 <img n:src="/imgs/some-image.png">
 ```
 
-### Tag `csrf`
-
-Generates hidden input `_token` in form with CSRF token https://laravel.com/docs/csrf#preventing-csrf-requests
-```html
-<form method="POST" action="/profile">
-    {csrf}
-
-    <!-- Equivalent to... -->
-    <input type="hidden" name="_token" value="{csrf_token()}" />
-</form>
-```
-
-### Tag `method`
-
-Generates a hidden input `_method` in the form for [Form Method Spoofing](https://laravel.com/docs/routing#form-method-spoofing)
+### Tags `csrf` and `method`
+Generate hidden inputs `_token` and `_method` in form.
+See [Preventing CSRF Requests](https://laravel.com/docs/csrf#preventing-csrf-requests)
+and [Form Method Spoofing](https://laravel.com/docs/routing#form-method-spoofing).
+Rendering as xhtml or html can be configured in the config file.
 ```html
 <form action="/example" method="POST">
+    
+    {csrf}
     {method PUT}
+    
+    <!-- Equivalent to... -->
+    
+    <input type="hidden" name="_token" value="{csrf_token()}" autocomplete="off">
+    <input type="hidden" name="_method" value="PUT">
+    
 </form>
 ```
 
 ### Tags `livewire`, `livewireStyles`, `livewireScripts` a `livewireScriptConfig`
+
 **🧪 Experimental**   
 Tags for [Livewire](https://livewire.laravel.com/). They are only available if livewire is implemented.
 ```html
