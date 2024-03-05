@@ -7,6 +7,7 @@ namespace Miko\LaravelLatte;
 use Illuminate\Foundation\Application;
 use Latte\Bridges\Tracy\TracyExtension;
 use Latte\Engine as Latte;
+use Latte\Essential\TranslatorExtension;
 use Latte\Runtime\Template;
 use Livewire\LivewireManager;
 
@@ -71,10 +72,18 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
     protected function extensions(Latte $latte): void
     {
+        // Regular extension for Laravel
         $latte->addExtension(new Extension());
+
+        // Translation
+        $latte->addExtension(new TranslatorExtension([Translator::class, 'translate']));
+
+        // Livewire
         if ($this->app->has(LivewireManager::class)) {
             $latte->addExtension(new LivewireExtension());
         }
+
+        // Tracy debugger
         if (class_exists('Tracy\Debugger') && \Tracy\Debugger::isEnabled()) {
             $latte->addExtension(new TracyExtension());
         }

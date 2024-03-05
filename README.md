@@ -118,6 +118,34 @@ Tags for [Livewire](https://livewire.laravel.com/). They are only available if l
 </html>
 ```
 
+### Translation
+There is implemented `Latte\Essential\TranslatorExtension`,
+so it is possible to use tags `{_}` and `{translate}` with Laravel functions `trans()` and `trans_choice()`.
+
+See doc:
+- https://latte.nette.org/en/develop#toc-translatorextension
+- https://latte.nette.org/en/tags#toc-translation
+- https://laravel.com/docs/localization#retrieving-translation-strings
+
+```html
+{_'messages.welcome'}
+{_'messages.welcome', [name: dayle]}
+{_'messages.apples', 10}
+{_'time.minutes_ago', 5, [value: 5]}
+{_'time.minutes_ago', 5, [value: 5], de}
+{_'messages.welcome', locale: de}
+```
+Above is equivalent to Laravel functions:
+```php
+echo __('messages.welcome');
+echo __('messages.welcome', ['name' => 'dayle']);
+echo trans_choice('messages.apples', 10);
+echo trans_choice('time.minutes_ago', 5, ['value' => 5]);
+echo trans_choice('time.minutes_ago', 5, ['value' => 5], 'de');
+echo __('messages.welcome', locale: 'de');
+```
+
+
 ### Components
 An object implementing `Mike\LaravelLatte\IComponent` can be rendered in template:
 ```php
