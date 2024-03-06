@@ -1,16 +1,24 @@
-{translate}messages.welcome{/translate}
-{translate}The action was completed successfully.{/translate}
-{translate [name: john]}messages.greeting{/translate}
-{translate [name: tom]}messages.bye{/translate}
-{translate 1}messages.apples{/translate}
-{translate 2}messages.apples{/translate}
-{translate 10}messages.apples{/translate}
-{translate 0}messages.pears{/translate}
-{translate 2}messages.pears{/translate}
-{translate 25}messages.pears{/translate}
-{translate 1, [value: 1]}messages.minutes_ago{/translate}
-{translate 2, [value => 2]}messages.minutes_ago{/translate}
-{translate 10, [value => 10]}messages.minutes_ago{/translate}
-{translate 0}messages.count{/translate}
-{translate 1}messages.count{/translate}
-{translate 10}messages.count{/translate}
+{var $a = 'messages.welcome'}
+{var $b = 'messages.apples'}
+{var $x = 'marry'}
+{var $y = ['name' => 'jane']}
+{var $z = 2}
+{_'messages.welcome'}
+{_$a}
+{_'The action was completed successfully.'}
+{_'messages.greeting', [name: 'john']}
+{_'messages.greeting', [name: $x]}
+{_'messages.bye', [name => 'tom']}
+{_'messages.bye', $y}
+{_'messages.apples', 1}
+{_'messages.apples', $z}
+{_$b, 10}
+{_'messages.pears', 0}
+{_'messages.pears', 2}
+{_'messages.pears', 25}
+{_'messages.minutes_ago', 1, [value: 1]}
+{_'messages.minutes_ago', 2, [value => 2]}
+{_'messages.minutes_ago', 10, [value => 10]}
+{_'messages.count', 0}
+{_'messages.count', 1}
+{_'messages.count', 10}

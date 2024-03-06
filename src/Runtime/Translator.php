@@ -1,6 +1,6 @@
 <?php
 
-namespace Miko\LaravelLatte;
+namespace Miko\LaravelLatte\Runtime;
 
 class Translator
 {

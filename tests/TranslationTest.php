@@ -3,7 +3,7 @@
 namespace Miko\LaravelLatte\Tests;
 
 use Illuminate\Support\Facades\App;
-use Miko\LaravelLatte\Translator;
+use Miko\LaravelLatte\Runtime\Translator;
 
 class TranslationTest extends TestCase
 {
@@ -38,17 +38,6 @@ class TranslationTest extends TestCase
         $this->assertEquals('Je tam jedno jablko', Translator::translate('messages.apples', 1, locale: 'cs'));
     }
 
-    public function tests_translation_underscore_tag(): void
-    {
-        $this->app['config']->set('app.locale', 'cs');
-
-        $output = view('translation/translation-underscore-tag')->render();
-
-        $expected = $this->getExpected('translation-tag-cs');
-
-        $this->assertEquals($expected, $output);
-    }
-
     public function tests_translation_tag(): void
     {
         $this->app['config']->set('app.locale', 'cs');
@@ -60,29 +49,17 @@ class TranslationTest extends TestCase
         $this->assertEquals($expected, $output);
     }
 
-    public function tests_translation_with_set_locale(): void
+    public function tests_translation_tag_with_set_locale(): void
     {
         $this->app['config']->set('app.locale', 'cs');
 
         // The locale has been changed at runtime
         App::setLocale('en');
 
-        $output = view('translation/translation-underscore-tag')->render();
+        $output = view('translation/translation-tag')->render();
 
         $expected = $this->getExpected('translation-tag-en');
 
         $this->assertEquals($expected, $output);
     }
-
-    // Doesn't work? :-o
-//    public function tests_translation_n_extension(): void
-//    {
-//        $this->app['config']->set('app.locale', 'cs');
-//
-//        $output = view('translation/translation-n-tag')->render();
-//
-//        $expected = $this->getExpected('translation-tag');
-//
-//        $this->assertEquals($expected, $output);
-//    }
 }

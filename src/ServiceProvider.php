@@ -7,7 +7,6 @@ namespace Miko\LaravelLatte;
 use Illuminate\Foundation\Application;
 use Latte\Bridges\Tracy\TracyExtension;
 use Latte\Engine as Latte;
-use Latte\Essential\TranslatorExtension;
 use Latte\Runtime\Template;
 use Livewire\LivewireManager;
 
@@ -76,7 +75,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         $latte->addExtension(new Extension());
 
         // Translation
-        $latte->addExtension(new TranslatorExtension([Translator::class, 'translate']));
+        $latte->addExtension(new TranslationExtension());
 
         // Livewire
         if ($this->app->has(LivewireManager::class)) {
