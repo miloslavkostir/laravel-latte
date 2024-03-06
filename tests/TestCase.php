@@ -72,11 +72,13 @@ class TestCase extends BaseTestCase
         $copy = resource_path('/views/' . $view . '/' . $suffix . '.latte');
         FileSystem::copy($orig, $copy);
 
-        // assert
-        $assertions($view . '/' . $suffix);
-
-        // clean the mess
-        FileSystem::delete(dirname($copy));
+        try {
+            // assert
+            $assertions($view . '/' . $suffix);
+        } finally {
+            // clean the mess
+            FileSystem::delete(dirname($copy));
+        }
     }
 
     protected function setUp(): void
