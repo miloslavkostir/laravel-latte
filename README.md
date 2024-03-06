@@ -27,7 +27,7 @@ See https://latte.nette.org/tags
 
 And additional:
 
-### Tags `link` and `n:href`
+### Tags `{link}` and `n:href`
 
 Similar to [tags in Nette](https://doc.nette.org/en/application/creating-links#toc-in-the-presenter-template)
 except that the separator berween controller and method is not `:` but `@` and the default method is not `default` but `index` according to the Laravel conventions.
@@ -69,7 +69,7 @@ template:
 ```
 At address `mysite.com/users/permissions/1/2` generates link `mysite.com/users/permissions/1/2?sort=date`
 
-### Tags `asset` and `n:src`
+### Tags `{asset}` and `n:src`
 
 Adds the `m` parameter to the URL with the timestamp of the last file change. Every time the file is changed, it will be reloaded
 and there is no need to clear the browser cache:
@@ -79,7 +79,7 @@ and there is no need to clear the browser cache:
 <img n:src="/imgs/some-image.png">
 ```
 
-### Tag `csrf`
+### Tag `{csrf}`
 
 Generates hidden input `_token` in form with CSRF token https://laravel.com/docs/csrf#preventing-csrf-requests
 ```html
@@ -91,7 +91,7 @@ Generates hidden input `_token` in form with CSRF token https://laravel.com/docs
 </form>
 ```
 
-### Tag `method`
+### Tag `{method}`
 
 Generates a hidden input `_method` in the form for [Form Method Spoofing](https://laravel.com/docs/routing#form-method-spoofing)
 ```html
@@ -100,7 +100,7 @@ Generates a hidden input `_method` in the form for [Form Method Spoofing](https:
 </form>
 ```
 
-### Tags `livewire`, `livewireStyles`, `livewireScripts` a `livewireScriptConfig`
+### Tags `{livewire}`, `{livewireStyles}`, `{livewireScripts}` a `{livewireScriptConfig}`
 **🧪 Experimental**   
 Tags for [Livewire](https://livewire.laravel.com/). They are only available if livewire is implemented.
 ```html
@@ -118,14 +118,11 @@ Tags for [Livewire](https://livewire.laravel.com/). They are only available if l
 </html>
 ```
 
-### Translation
-There is implemented `Latte\Essential\TranslatorExtension`,
-so it is possible to use tags `{_}` and `{translate}` with Laravel functions `trans()` and `trans_choice()`.
+### Translation `{_}`
 
-See doc:
-- https://latte.nette.org/en/develop#toc-translatorextension
-- https://latte.nette.org/en/tags#toc-translation
-- https://laravel.com/docs/localization#retrieving-translation-strings
+Laravel provides functions `__()` and `trans()` respectively, see [retrieving translation strings](https://laravel.com/docs/localization#retrieving-translation-strings),
+and `trans_choice()`, see [Pluralization](https://laravel.com/docs/localization#pluralization).
+The tag `{_}` can handle both, it depends on the second parameter, whether it is an integer or an array.
 
 ```html
 {_'messages.welcome'}
@@ -145,8 +142,26 @@ echo trans_choice('time.minutes_ago', 5, ['value' => 5], 'de');
 echo __('messages.welcome', locale: 'de');
 ```
 
+If you want to implement `Latte\Essential\TranslatorExtension` as described in [Latte doc](https://latte.nette.org/en/develop#toc-translatorextension),
+you can do so in `ServiceProvider` e.g. like this:
+```php
+use Latte\Essential\TranslatorExtension;
+use Miko\LaravelLatte\Runtime\Translator;
 
-### Components
+public function boot(): void
+{
+    $latte = $this->app->get(\Latte\Engine::class);
+    $latte->addExtension(new TranslatorExtension([Translator::class, 'translate']));
+}
+```
+Why is it not implemented by default?
+- `{translate}{/translate}` and `n:translate` tag are tempting to use 
+[translation strings as keys](https://laravel.com/docs/localization#using-translation-strings-as-keys)
+for an entire paragraph, which seems like hell and leads to error rates.
+- `n:translate` doesn't work (v3.0.13) 
+- setting the `lang` parameter as a cache key for precompiling static texts does not work if the language is set at runtime with `App::setLocale()`
+
+### Components `{x}`
 An object implementing `Mike\LaravelLatte\IComponent` can be rendered in template:
 ```php
 namespace App\View\Components;
