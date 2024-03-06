@@ -7,6 +7,7 @@ use Illuminate\Encryption\Encrypter;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
+use Nette\Utils\Random;
 use Tracy\Debugger;
 
 class TestCase extends BaseTestCase
@@ -53,6 +54,28 @@ class TestCase extends BaseTestCase
             $files[] = $file;
         }
         return $files;
+    }
+
+    /**
+     * It is necessary to have some views many times, because after the compilation of the first template,
+     * the same view would not be compiled a second time, even if the templates are deleted before each test.
+     * It is probably because the template file is deleted but template class is still included - class_exists()
+     * returns true in Latte\Engine::createTemplate()
+     */
+    protected function assertUniqueView(string $view, callable $assertions): void
+    {
+        // copy file for new compiling
+        $suffix = Random::generate();
+        $view = str_replace('.', '/', $view);
+        $orig = resource_path('/views/' . $view . '.latte');
+        $copy = resource_path('/views/' . $view . '/' . $suffix . '.latte');
+        FileSystem::copy($orig, $copy);
+
+        // assert
+        $assertions($view . '/' . $suffix);
+
+        // clean the mess
+        FileSystem::delete(dirname($copy));
     }
 
     protected function setUp(): void
