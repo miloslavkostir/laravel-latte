@@ -170,14 +170,14 @@ for an entire paragraph, which seems like hell and leads to error rates.
 - setting the `lang` parameter as a cache key for precompiling static texts does not work if the language is set at runtime with `App::setLocale()`
 
 ### Components `{x}`
-An object implementing `Mike\LaravelLatte\IComponent` can be rendered in template:
+An object implementing `Miko\LaravelLatte\IComponent` can be rendered in template:
 ```php
 namespace App\View\Components;
 
 use Illuminate\View\View;
 use Miko\LaravelLatte\IComponent;
 
-class Alert extends Component
+class Alert implements IComponent
 {
     private array $params = [];
 
@@ -205,7 +205,7 @@ class Alert extends Component
     }
 }
 ```
-View `components.alert`:
+View:
 ```html
 {x alert type => error, message => $message}
 ```
