@@ -10,6 +10,8 @@ use Latte\Compiler\Tag;
 
 class CsrfNode extends StatementNode
 {
+    public static bool $xhtml = false;
+
     public static function create(Tag $tag): static
     {
         $node = $tag->node = new static();
@@ -18,7 +20,7 @@ class CsrfNode extends StatementNode
 
     public function print(PrintContext $context): string
     {
-        $xhtml = config('latte.xhtml') ? 'true' : 'false';
+        $xhtml = self::$xhtml ? 'true' : 'false';
         return $context->format(
             <<<XX
                 echo \Miko\LaravelLatte\Runtime\Csrf::generate($xhtml) %line;

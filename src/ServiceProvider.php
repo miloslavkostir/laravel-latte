@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Miko\LaravelLatte;
 
+use Illuminate\Config\Repository as ConfigRepository;
 use Illuminate\Foundation\Application;
 use Latte\Bridges\Tracy\TracyExtension;
 use Latte\Engine as Latte;
@@ -12,6 +13,8 @@ use Livewire\LivewireManager;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
+    protected ConfigRepository $config;
+
     public function register(): void
     {
         $this->mergeConfigFrom(
@@ -21,6 +24,8 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
     public function boot(): void
     {
+        $this->config = $this->app->get('config');
+
         $this->publishes([
             __DIR__ . '/../config/latte.php' => config_path('latte.php'),
         ]);
@@ -54,7 +59,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
     protected function configure(Latte $latte): void
     {
-        $config = $this->app->get('config');
+        $config = $this->config;
         $compiled = $config->get('latte.compiled') ?? $config->get('view.compiled');
 
         $latte->setTempDirectory($compiled ?: null);
@@ -71,14 +76,13 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
     protected function decideAutoRefresh(): bool
     {
-        $config = $this->app->get('config');
-        return $config->get('latte.auto_refresh') ?? $config->get('app.debug', false);
+        return $this->config->get('latte.auto_refresh') ?? $this->config->get('app.debug', false);
     }
 
     protected function extensions(Latte $latte): void
     {
         // Regular extension for Laravel
-        $latte->addExtension(new Extension());
+        $latte->addExtension(new Extension($this->config->get('latte')));
 
         // Translation
         $latte->addExtension(new TranslationExtension($this->decideAutoRefresh()));

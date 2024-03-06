@@ -4,11 +4,19 @@ declare(strict_types=1);
 
 namespace Miko\LaravelLatte;
 
+use Illuminate\Support\Arr;
 use Latte\Extension as LatteExtension;
-use Miko\LaravelLatte\Filters\Nl2br;
 
 class Extension extends LatteExtension
 {
+    public function __construct(array $config)
+    {
+        $xhtml = Arr::get($config, 'xhtml', false);
+        Nodes\CsrfNode::$xhtml = $xhtml;
+        Nodes\MethodNode::$xhtml = $xhtml;
+        Filters\Nl2br::$xhtml = $xhtml;
+    }
+
     public function getTags(): array
     {
         return [
@@ -26,7 +34,7 @@ class Extension extends LatteExtension
     public function getFilters(): array
     {
         return [
-            'nl2br' => [Nl2br::class, 'handle'],
+            'nl2br' => [Filters\Nl2br::class, 'handle'],
         ];
     }
 }
