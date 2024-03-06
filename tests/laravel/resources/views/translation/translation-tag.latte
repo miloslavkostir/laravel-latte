@@ -1,0 +1,25 @@
+{var $a = 'messages.welcome'}
+{var $b = 'messages.apples'}
+{var $x = 'marry'}
+{var $y = ['name' => 'jane']}
+{var $z = 2}
+{_'messages.welcome'}
+{_$a}
+{_'The action was completed successfully.'}
+{_'messages.greeting', [name: 'john']}
+{_'messages.greeting', [name: $x]}
+{_'messages.bye', [name => 'tom']}
+{_'messages.bye', $y}
+{_'messages.apples', 1}
+{_'messages.apples', $z}
+{_$b, 10}
+{_'messages.pears', 0}
+{_'messages.pears', 2}
+{_'messages.pears', 25}
+{_'messages.minutes_ago', 1, [value: 1]}
+{_'messages.minutes_ago', 2, [value => 2]}
+{_'messages.minutes_ago', 10, [value => 10]}
+{_'messages.count', 0}
+{_'messages.count', 1}
+{_'messages.count', 10}
+{_'messages.welcome', locale: en}
