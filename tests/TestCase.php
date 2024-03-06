@@ -39,7 +39,7 @@ class TestCase extends BaseTestCase
     protected function findCompiled(string $view, string $dir = self::TEMP_DIR): ?string
     {
         $view = str_replace(['.','/'], '-', $view);
-        $finder = Finder::findFiles("*-$view.latte--*.php")->in($dir);
+        $finder = Finder::findFiles("*$view.latte--*.php")->in($dir);
         $files = $finder->collect();
         return $files[0] ?? null;
     }

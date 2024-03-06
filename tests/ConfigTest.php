@@ -12,6 +12,7 @@ namespace Miko\LaravelLatte\Tests;
 use Latte\CompileException;
 use Latte\RuntimeException;
 use Nette\Utils\FileSystem;
+use Nette\Utils\Random;
 
 class ConfigTest extends TestCase
 {
@@ -146,12 +147,40 @@ class ConfigTest extends TestCase
 
     // latte.auto_refresh
 
-    private function getAutoRefreshPropertyValue(): bool
+    private function assertAutoRefresh(bool $expected): void
     {
         /** @var \Latte\Engine $latte */
         $latte = $this->app->get('Latte\Engine');
         $reflection = new \ReflectionClass($latte);
-        return $reflection->getProperty('autoRefresh')->getValue($latte);
+        $autoRefresh = $reflection->getProperty('autoRefresh')->getValue($latte);
+        $this->assertTrue($autoRefresh === $expected,
+            'Latte\Engine::$autoRefresh is not expected ' . ($expected ? 'true' : 'false'));
+    }
+
+    private function assertPrecompiledTranslations(bool $expectedPrecompiled): void
+    {
+        // copy file for new compiling
+        $suffix = Random::generate();
+        $orig = resource_path('/views/config/auto-refresh.latte');
+        $copy = resource_path('/views/config/auto-refresh/'.$suffix.'.latte');
+        FileSystem::copy($orig, $copy);
+
+        // compile
+        view('config/auto-refresh/'.$suffix)->render();
+
+        // assert
+        $file = $this->findCompiled('config/auto-refresh/'.$suffix);
+        $this->assertNotNull($file);
+        if ($expectedPrecompiled) {
+            $this->assertDoesNotMatchRegularExpression("#Translator::translate\('messages.welcome',#", file_get_contents($file));
+            $this->assertMatchesRegularExpression("#Welcome to our application!#", file_get_contents($file));
+        } else {
+            $this->assertMatchesRegularExpression("#Translator::translate\('messages.welcome',#", file_get_contents($file));
+            $this->assertDoesNotMatchRegularExpression("#Welcome to our application!#", file_get_contents($file));
+        }
+
+        // clean the mess
+        FileSystem::delete(dirname($copy));
     }
 
     public function test_not_configured_auto_refresh_debug_true(): void
@@ -159,9 +188,8 @@ class ConfigTest extends TestCase
         // No 'latte.auto_refresh' config
         $this->app['config']->set('app.debug', true);
 
-        $autoRefresh = $this->getAutoRefreshPropertyValue();
-
-        $this->assertTrue($autoRefresh);
+        $this->assertAutoRefresh(true);
+        $this->assertPrecompiledTranslations(false);
     }
 
     public function test_not_configured_auto_refresh_debug_false(): void
@@ -169,9 +197,8 @@ class ConfigTest extends TestCase
         // No 'latte.auto_refresh' config
         $this->app['config']->set('app.debug', false);
 
-        $autoRefresh = $this->getAutoRefreshPropertyValue();
-
-        $this->assertFalse($autoRefresh);
+        $this->assertAutoRefresh(false);
+        $this->assertPrecompiledTranslations(true);
     }
 
     public function test_configured_auto_refresh_null_debug_true(): void
@@ -179,9 +206,8 @@ class ConfigTest extends TestCase
         $this->app['config']->set('latte.auto_refresh', null);
         $this->app['config']->set('app.debug', true);
 
-        $autoRefresh = $this->getAutoRefreshPropertyValue();
-
-        $this->assertTrue($autoRefresh);
+        $this->assertAutoRefresh(true);
+        $this->assertPrecompiledTranslations(false);
     }
 
     public function test_configured_auto_refresh_null_debug_false(): void
@@ -189,9 +215,8 @@ class ConfigTest extends TestCase
         $this->app['config']->set('latte.auto_refresh', null);
         $this->app['config']->set('app.debug', false);
 
-        $autoRefresh = $this->getAutoRefreshPropertyValue();
-
-        $this->assertFalse($autoRefresh);
+        $this->assertAutoRefresh(false);
+        $this->assertPrecompiledTranslations(true);
     }
 
     public function test_configured_auto_refresh_false(): void
@@ -199,9 +224,8 @@ class ConfigTest extends TestCase
         $this->app['config']->set('latte.auto_refresh', false);
         $this->app['config']->set('app.debug', true);
 
-        $autoRefresh = $this->getAutoRefreshPropertyValue();
-
-        $this->assertFalse($autoRefresh);
+        $this->assertAutoRefresh(false);
+        $this->assertPrecompiledTranslations(true);
     }
 
     public function test_configured_auto_refresh_true(): void
@@ -209,9 +233,8 @@ class ConfigTest extends TestCase
         $this->app['config']->set('latte.auto_refresh', true);
         $this->app['config']->set('app.debug', false);
 
-        $autoRefresh = $this->getAutoRefreshPropertyValue();
-
-        $this->assertTrue($autoRefresh);
+        $this->assertAutoRefresh(true);
+        $this->assertPrecompiledTranslations(false);
     }
 
     // latte.strict_parsing

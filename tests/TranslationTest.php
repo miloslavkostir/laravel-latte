@@ -41,6 +41,7 @@ class TranslationTest extends TestCase
     public function tests_translation_tag(): void
     {
         $this->app['config']->set('app.locale', 'cs');
+        $this->app['config']->set('latte.auto_refresh', false);
 
         $output = view('translation/translation-tag')->render();
 
@@ -52,6 +53,7 @@ class TranslationTest extends TestCase
     public function tests_translation_tag_with_set_locale(): void
     {
         $this->app['config']->set('app.locale', 'cs');
+        $this->app['config']->set('latte.auto_refresh', false);
 
         // The locale has been changed at runtime
         App::setLocale('en');

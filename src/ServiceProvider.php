@@ -56,17 +56,23 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     {
         $config = $this->app->get('config');
         $compiled = $config->get('latte.compiled') ?? $config->get('view.compiled');
+
         $latte->setTempDirectory($compiled ?: null);
-        $latte->setAutoRefresh($config->get('latte.auto_refresh') ?? $config->get('app.debug', false));
+        $latte->setAutoRefresh($this->decideAutoRefresh());
         $latte->setStrictParsing($config->get('latte.strict_parsing'));
         $latte->setStrictTypes($config->get('latte.strict_types'));
 
-        $finder = function (Template $template) use ($config) {
+        $latte->addProvider('coreParentFinder', function (Template $template) use ($config) {
             if (!$template->getReferenceType() && $layout = $config->get('latte.layout')) {
                 return $layout;
             }
-        };
-        $latte->addProvider('coreParentFinder', $finder);
+        });
+    }
+
+    protected function decideAutoRefresh(): bool
+    {
+        $config = $this->app->get('config');
+        return $config->get('latte.auto_refresh') ?? $config->get('app.debug', false);
     }
 
     protected function extensions(Latte $latte): void
@@ -75,7 +81,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         $latte->addExtension(new Extension());
 
         // Translation
-        $latte->addExtension(new TranslationExtension());
+        $latte->addExtension(new TranslationExtension($this->decideAutoRefresh()));
 
         // Livewire
         if ($this->app->has(LivewireManager::class)) {

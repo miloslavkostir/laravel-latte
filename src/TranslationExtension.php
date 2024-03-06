@@ -10,6 +10,11 @@ use Latte\Extension as LatteExtension;
 
 class TranslationExtension extends LatteExtension
 {
+    public function __construct(bool $autoRefresh)
+    {
+        Nodes\TranslationNode::$autoRefresh = $autoRefresh;
+    }
+
     public function getTags(): array
     {
         return [

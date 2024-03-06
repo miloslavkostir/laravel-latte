@@ -16,6 +16,7 @@ use Miko\LaravelLatte\Runtime\Translator;
 
 class TranslationNode extends StatementNode
 {
+    public static $autoRefresh = false;
     private ExpressionNode $key;
     private ArrayNode $args;
     private ModifierNode $modifier;
@@ -41,7 +42,7 @@ class TranslationNode extends StatementNode
         $args = $this->toValue($this->args);
         // $args === null if arguments contains a variable
         // $args === [] if there are no arguments
-        if ($this->key instanceof StringNode && $args !== null) {
+        if (!self::$autoRefresh && $this->key instanceof StringNode && $args !== null) {
             $translated = Translator::translate($this->key->value, ...$args);
             return $context->format(
                 "echo %modify('$translated') %line;",
