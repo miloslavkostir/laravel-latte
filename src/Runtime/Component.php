@@ -12,7 +12,7 @@ class Component
 {
     public static function generate(string $name, array $params = []): View|string
     {
-        if (! class_exists($name)) {
+        if (! strpos($name, '\\')) {
             $name = self::composeName($name);
         }
         $component = app($name);
