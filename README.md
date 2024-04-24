@@ -125,6 +125,17 @@ Tags for [Livewire](https://livewire.laravel.com/). They are only available if l
 </body>
 </html>
 ```
+Since Livewire renders its templates itself, the template can be a latte or a blade file.   
+⚠️ **WARNING:** if the component view is a latte file and the default layout is set in config (`latte.layout`), the component view **must have** `{layout none}` at the beginning.
+Otherwise, Latte engine will try to render the layout again for this component.
+
+`resources/views/livewire/component-name.latte`:
+```html
+{layout none}
+<div>
+    ...
+</div>
+```
 
 ### Translation `{_}`
 

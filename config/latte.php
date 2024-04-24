@@ -42,6 +42,8 @@ return [
     | tag. If the template should not have a layout, it will indicate this
     | with the {layout none} tag.
     |
+    | !! The {layout none} tag is required for all livewire views !!
+    |
     | The path should be absolute.
     |
     | https://latte.nette.org/en/develop#toc-automatic-layout-lookup
