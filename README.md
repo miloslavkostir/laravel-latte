@@ -223,3 +223,6 @@ View:
 ```
 Root namespace of components is set in config (`latte.components_namespace`) 
 and is `App\View\Components` by default.
+
+⚠️ **WARNING:** if the default layout is set in config (`latte.layout`), the component view **must have** `{layout none}` at the beginning.
+Otherwise, Latte engine will try to render the layout again for this component.
