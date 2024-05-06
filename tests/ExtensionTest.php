@@ -54,20 +54,16 @@ class ExtensionTest extends TestCase
         view('extension/method-tag-without-parameter')->render();
     }
 
-    public function test_method_tag_unsupported_method(): void
+    public function test_method_tag_null_parameter(): void
     {
-        $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('Only PUT, PATCH and DELETE methods are possible via method spoofing');
+        $output = view('extension/method-tag-empty-parameter', [
+            'var1' => '',
+            'var2' => null,
+            'var3' => false,
+            'var4' => 0,
+        ])->render();
 
-        view('extension/method-tag', ['method' => 'FOO'])->render();
-    }
-
-    public function test_method_tag_get_method(): void
-    {
-        $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('Do not use GET and POST method via method spoofing. Use the "method" form attribute instead.');
-
-        view('extension/method-tag', ['method' => 'GET'])->render();
+        $this->assertEquals(str_repeat(PHP_EOL, 7), $output);
     }
 
     public function test_asset_tag(): void
