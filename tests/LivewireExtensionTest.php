@@ -45,7 +45,8 @@ class LivewireExtensionTest extends TestCase
             if (is_int($key)) {
                 $key = 'lw-'.crc32(realpath(resource_path('views/livewire/livewire-tags.latte'))).'-'.$key;
             }
-            return 'echo ' . preg_quote('\Miko\LaravelLatte\Runtime\Livewire') . "::generate\('livewire-component', \[\], '$key'\) \/\* line $line \*\/";
+            $linePattern = defined('Latte\Feature::StrictTypes') ? "pos $line:1" : "line $line";
+            return 'echo ' . preg_quote('\Miko\LaravelLatte\Runtime\Livewire') . "::generate\('livewire-component', \[\], '$key'\) \/\* $linePattern \*\/";
         };
 
         $this->assertMatchesRegularExpression('#'.$pattern(0, 2).'#', file_get_contents($file));

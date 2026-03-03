@@ -91,12 +91,13 @@ return [
     |--------------------------------------------------------------------------
     |
     | To generate templates with the "declare(strict_types=1)" header.
+    | In Latte 3.1+, this is enabled by default.
     |
     | https://latte.nette.org/en/develop#toc-strict-mode
     |
     */
 
-    'strict_types' => false,
+    'strict_types' => true,
 
     /*
     |---------------------------------------------------------------------------
@@ -109,5 +110,32 @@ return [
     */
 
     'components_namespace' => 'App\\View\\Components',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Migration Warnings (Latte 3.1+)
+    |--------------------------------------------------------------------------
+    |
+    | Latte 3.1 introduced Smart HTML Attributes. To help with migration,
+    | you can enable migration warnings which will trigger E_USER_WARNING
+    | when the output would differ from Latte 3.0.
+    |
+    | https://blog.nette.org/en/latte-3-1-is-here-smarter-fairer-and-strict
+    |
+    */
+
+    'migration_warnings' => env('LATTE_MIGRATION_WARNINGS', false),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Smart HTML Attributes (Latte 3.1+)
+    |--------------------------------------------------------------------------
+    |
+    | Enables smarter handling of HTML attributes (null removes attribute,
+    | boolean attributes, automatic JSON serialization for data attributes).
+    |
+    */
+
+    'smart_attributes' => true,
 
 ];
