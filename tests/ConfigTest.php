@@ -276,7 +276,7 @@ class ConfigTest extends TestCase
     public function test_configured_strict_parsing_null(): void
     {
         $this->expectException(\TypeError::class);
-        $this->expectExceptionMessage('Latte\Engine::setStrictParsing(): Argument #1 ($on) must be of type bool, null given');
+        $this->expectExceptionMessage('Latte\Engine::setStrictParsing(): Argument #1 ($state) must be of type bool, null given');
 
         $this->app['config']->set('latte.strict_parsing', null);
 
@@ -329,7 +329,7 @@ class ConfigTest extends TestCase
     public function test_configured_strict_types_null(): void
     {
         $this->expectException(\TypeError::class);
-        $this->expectExceptionMessage('Latte\Engine::setStrictTypes(): Argument #1 ($on) must be of type bool, null given');
+        $this->expectExceptionMessage('Latte\Engine::setStrictTypes(): Argument #1 ($state) must be of type bool, null given');
 
         $this->app['config']->set('latte.strict_types', null);
 

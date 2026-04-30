@@ -60,7 +60,7 @@ class TestCase extends BaseTestCase
     /**
      * It is necessary to have some views many times, because after the compilation of the first template,
      * the same view would not be compiled a second time, even if the templates are deleted before each test.
-     * It is probably because the template file is deleted but template class is still included - class_exists()
+     * It is probably because the template file is deleted, but the template class is still included - class_exists()
      * returns true in Latte\Engine::createTemplate()
      */
     protected function assertUniqueView(string $view, callable $assertions): void
