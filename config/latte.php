@@ -91,12 +91,73 @@ return [
     |--------------------------------------------------------------------------
     |
     | To generate templates with the "declare(strict_types=1)" header.
+    | Since Latte 3.1, strict types are enabled by default.
     |
     | https://latte.nette.org/en/develop#toc-strict-mode
     |
     */
 
-    'strict_types' => false,
+    'strict_types' => true,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Scoped Loop Variables
+    |--------------------------------------------------------------------------
+    |
+    | By default, variables defined in a {foreach} loop (like $key and $value)
+    | remain accessible after the loop ends – just like in PHP itself.
+    | This can lead to unintended variable overwrites when a loop variable
+    | has the same name as an existing template variable.
+    |
+    | The ScopedLoopVariables feature limits the scope of loop variables
+    | to the loop body. After the loop ends, the original variable value
+    | is restored (if it existed before), or the variable is unset.
+    |
+    | https://latte.nette.org/en/develop#toc-scoped-loop-variables
+    |
+    */
+
+    'scoped_loop_variables' => false,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Automatic Dedentation
+    |--------------------------------------------------------------------------
+    |
+    | When using paired tags like {if}, {foreach}, or {block}, you often indent
+    | the nested content for readability. However, this indentation is included
+    | in the generated output by default. The Dedent feature automatically
+    | removes it, so the output stays clean regardless of how deeply you nest
+    | your Latte tags.
+    |
+    | https://latte.nette.org/en/develop#toc-dedent
+    |
+    */
+
+    'dedent' => false,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Migration Warnings
+    |--------------------------------------------------------------------------
+    |
+    | Latte 3.1 changes the behavior of some HTML attributes:
+    | https://latte.nette.org/en/html-attributes.
+    | For example, null values now drop the attribute instead of printing
+    | an empty string. To easily find places where this change affects your
+    | templates, you can enable migration warnings.
+    |
+    | When enabled, Latte checks rendered attributes and triggers
+    | a user warning (E_USER_WARNING) if the output differs from what
+    | Latte 3.0 would have produced.
+    |
+    | If "null", true is used for app.debug, otherwise false
+    |
+    | https://latte.nette.org/en/develop#toc-migration-warnings
+    |
+    */
+
+    'migration_warnings' => env('LATTE_MIGRATION_WARNINGS', null),
 
     /*
     |---------------------------------------------------------------------------

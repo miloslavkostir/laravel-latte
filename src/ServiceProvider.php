@@ -8,6 +8,7 @@ use Illuminate\Config\Repository as ConfigRepository;
 use Illuminate\Foundation\Application;
 use Latte\Bridges\Tracy\TracyExtension;
 use Latte\Engine as Latte;
+use Latte\Feature;
 use Latte\Runtime\Template;
 use Livewire\LivewireManager;
 
@@ -62,10 +63,13 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         $config = $this->config;
         $compiled = $config->get('latte.compiled') ?? $config->get('view.compiled');
 
-        $latte->setTempDirectory($compiled ?: null);
+        $latte->setCacheDirectory($compiled ?: null);
         $latte->setAutoRefresh($this->decideAutoRefresh());
-        $latte->setStrictParsing($config->get('latte.strict_parsing'));
-        $latte->setStrictTypes($config->get('latte.strict_types'));
+        $latte->setFeature(Feature::StrictParsing, $config->get('latte.strict_parsing'));
+        $latte->setFeature(Feature::StrictTypes, $config->get('latte.strict_types'));
+        $latte->setFeature(Feature::ScopedLoopVariables, $config->get('latte.scoped_loop_variables'));
+        $latte->setFeature(Feature::Dedent, $config->get('latte.dedent'));
+        $latte->setFeature(Feature::MigrationWarnings, $this->decideMigrationWarnings());
 
         $latte->addProvider('coreParentFinder', function (Template $template) use ($config) {
             if (!$template->getReferenceType() && $layout = $config->get('latte.layout')) {
@@ -77,6 +81,11 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     protected function decideAutoRefresh(): bool
     {
         return $this->config->get('latte.auto_refresh') ?? $this->config->get('app.debug', false);
+    }
+
+    protected function decideMigrationWarnings(): bool
+    {
+        return $this->config->get('latte.migration_warnings') ?? $this->config->get('app.debug', false);
     }
 
     protected function extensions(Latte $latte): void
