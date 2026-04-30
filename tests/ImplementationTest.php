@@ -6,7 +6,7 @@ class ImplementationTest extends TestCase
 {
     public function test_latte_implemented(): void
     {
-        $output = view('implementation/implemented', ['foo' => 'Bar', 'title' => null])->render();
+        $output = view('implementation/implemented', ['foo' => 'Bar'])->render();
 
         $expected = $this->getExpected('implemented');
 

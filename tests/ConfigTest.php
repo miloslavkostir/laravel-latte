@@ -276,7 +276,7 @@ class ConfigTest extends TestCase
     public function test_configured_strict_parsing_null(): void
     {
         $this->expectException(\TypeError::class);
-        $this->expectExceptionMessage('Latte\Engine::setStrictParsing(): Argument #1 ($state) must be of type bool, null given');
+        $this->expectExceptionMessage('Latte\Engine::setFeature(): Argument #2 ($state) must be of type bool, null given');
 
         $this->app['config']->set('latte.strict_parsing', null);
 
@@ -322,14 +322,14 @@ class ConfigTest extends TestCase
 
             $file = $this->findCompiled($newView);
 
-            $this->assertDoesNotMatchRegularExpression('#declare\(strict_types=1\)#', file_get_contents($file));
+            $this->assertMatchesRegularExpression('#declare\(strict_types=1\)#', file_get_contents($file));
         });
     }
 
     public function test_configured_strict_types_null(): void
     {
         $this->expectException(\TypeError::class);
-        $this->expectExceptionMessage('Latte\Engine::setStrictTypes(): Argument #1 ($state) must be of type bool, null given');
+        $this->expectExceptionMessage('Latte\Engine::setFeature(): Argument #2 ($state) must be of type bool, null given');
 
         $this->app['config']->set('latte.strict_types', null);
 
@@ -361,6 +361,182 @@ class ConfigTest extends TestCase
             $file = $this->findCompiled($newView);
 
             $this->assertMatchesRegularExpression('#declare\(strict_types=1\)#', file_get_contents($file));
+        });
+    }
+
+    // latte.scoped_loop_variables
+
+    public function test_not_configured_scoped_loop_variables(): void
+    {
+        $this->assertUniqueView('config/scoped_loop_variables', function (string $newView) {
+            $output = view($newView)->render();
+            $this->assertEquals('Bar', $output);
+        });
+    }
+
+    public function test_configured_scoped_loop_variables_null(): void
+    {
+        $this->expectException(\TypeError::class);
+        $this->expectExceptionMessage('Latte\Engine::setFeature(): Argument #2 ($state) must be of type bool, null given');
+
+        $this->app['config']->set('latte.scoped_loop_variables', null);
+
+        $this->assertUniqueView('config/scoped_loop_variables', function (string $newView) {
+            view($newView)->render();
+        });
+    }
+
+    public function test_configured_scoped_loop_variables_false(): void
+    {
+        $this->app['config']->set('latte.scoped_loop_variables', false);
+
+        $this->assertUniqueView('config/scoped_loop_variables', function (string $newView) {
+            $output = view($newView)->render();
+            $this->assertEquals('Bar', $output);
+        });
+    }
+
+    public function test_configured_scoped_loop_variables_true(): void
+    {
+        $this->app['config']->set('latte.scoped_loop_variables', true);
+
+        $this->assertUniqueView('config/scoped_loop_variables', function (string $newView) {
+            $output = view($newView)->render();
+            $this->assertEquals('Yay', $output);
+        });
+    }
+
+    // latte.dedent
+
+    public function test_not_configured_dedent(): void
+    {
+        $this->assertUniqueView('config/dedent', function (string $newView) {
+            $output = view($newView)->render();
+
+            $expected = <<<HTML
+            <ul>
+                    <li>Foo</li>
+                    <li>Bar</li>
+            </ul>
+            HTML;
+
+            $this->assertEquals($expected, $output);
+        });
+    }
+
+    public function test_configured_dedent_null(): void
+    {
+        $this->expectException(\TypeError::class);
+        $this->expectExceptionMessage('Latte\Engine::setFeature(): Argument #2 ($state) must be of type bool, null given');
+
+        $this->app['config']->set('latte.dedent', null);
+
+        $this->assertUniqueView('config/scoped_loop_variables', function (string $newView) {
+            view($newView)->render();
+        });
+    }
+
+    public function test_configured_dedent_false(): void
+    {
+        $this->app['config']->set('latte.dedent', false);
+
+        $this->assertUniqueView('config/dedent', function (string $newView) {
+            $output = view($newView)->render();
+
+            $expected = <<<HTML
+            <ul>
+                    <li>Foo</li>
+                    <li>Bar</li>
+            </ul>
+            HTML;
+
+            $this->assertEquals($expected, $output);
+        });
+    }
+
+    public function test_configured_dedent_true(): void
+    {
+        $this->app['config']->set('latte.dedent', true);
+
+        $this->assertUniqueView('config/dedent', function (string $newView) {
+            $output = view($newView)->render();
+
+            $expected = <<<HTML
+            <ul>
+                <li>Foo</li>
+                <li>Bar</li>
+            </ul>
+            HTML;
+
+            $this->assertEquals($expected, $output);
+        });
+    }
+
+    // latte.migration_warnings
+
+    public function test_not_configured_migration_warnings_debug(): void
+    {
+        $this->app['config']->set('app.debug', true);
+
+        $this->expectException(\ErrorException::class);
+        $this->expectExceptionMessage('Behavior change for attribute \'title\' with value null: previously it rendered as title="", now the attribute is omitted');
+
+        $this->assertUniqueView('config/migration_warnings', function (string $newView) {
+            view($newView)->render();
+        });
+    }
+
+    public function test_not_configured_migration_warnings_no_debug(): void
+    {
+        $this->app['config']->set('app.debug', false);
+
+        $this->assertUniqueView('config/migration_warnings', function (string $newView) {
+            $output = view($newView)->render();
+
+            $expected = <<<HTML
+            <div>Test</div>
+            HTML;
+
+            $this->assertEquals($expected, $output);
+        });
+    }
+
+    public function test_configured_migration_warnings_null(): void
+    {
+        $this->expectException(\ErrorException::class);
+        $this->expectExceptionMessage('Behavior change for attribute \'title\' with value null: previously it rendered as title="", now the attribute is omitted');
+
+        $this->app['config']->set('latte.migration_warnings', null);
+
+        $this->assertUniqueView('config/migration_warnings', function (string $newView) {
+            view($newView)->render();
+        });
+    }
+
+    public function test_configured_migration_warnings_false(): void
+    {
+        $this->app['config']->set('latte.migration_warnings', false);
+
+        $this->assertUniqueView('config/migration_warnings', function (string $newView) {
+            $output = view($newView)->render();
+
+            $expected = <<<HTML
+            <div>Test</div>
+            HTML;
+
+            $this->assertEquals($expected, $output);
+        });
+    }
+
+    public function test_configured_migration_warnings_true(): void
+    {
+        $this->expectException(\ErrorException::class);
+        $this->expectExceptionMessage('Behavior change for attribute \'title\' with value null: previously it rendered as title="", now the attribute is omitted');
+
+        $this->app['config']->set('latte.migration_warnings', true);
+
+        $this->assertUniqueView('config/migration_warnings', function (string $newView) {
+            view($newView)->render();
         });
     }
 

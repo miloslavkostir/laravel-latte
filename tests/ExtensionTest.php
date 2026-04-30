@@ -56,6 +56,23 @@ class ExtensionTest extends TestCase
 
     public function test_method_tag_null_parameter(): void
     {
+        $this->app['config']->set('latte.strict_types', false);
+        $output = view('extension/method-tag-empty-parameter', [
+            'var1' => '',
+            'var2' => null,
+            'var3' => false,
+            'var4' => 0,
+        ])->render();
+
+        $this->assertEquals(str_repeat(PHP_EOL, 7), $output);
+    }
+
+    public function test_method_tag_null_parameter_strict(): void
+    {
+        $this->expectException(\TypeError::class);
+        $this->expectExceptionMessage('Miko\LaravelLatte\Runtime\Method::generate(): Argument #1 ($method) must be of type ?string');
+
+        $this->app['config']->set('latte.strict_types', true);
         $output = view('extension/method-tag-empty-parameter', [
             'var1' => '',
             'var2' => null,

@@ -2,13 +2,11 @@
 {block content}
 
     Hello {$foo}
-    {var $num = 100}
     {foreach [1,2,3,4,5,6,7,8,9,10] as $num}
         {if $num % 2 === 0}
             {$num}
         {/if}
     {/foreach}
-    {$num}
 
     {var $x = true}
     <div n:if="$x">x is true</div>
@@ -19,4 +17,3 @@
 
     {include myBlock y => 'foobar'}
 
-    <div title="{$title}">Div with empty title</div>
