@@ -180,8 +180,8 @@ class ConfigTest extends TestCase
         /** @var \Latte\Engine $latte */
         $latte = $this->app->get('Latte\Engine');
         $reflection = new \ReflectionClass($latte);
-        $autoRefresh = $reflection->getProperty('autoRefresh')->getValue($latte);
-        $this->assertTrue($autoRefresh === $expected,
+        $cache = $reflection->getProperty('cache')->getValue($latte);
+        $this->assertTrue($cache->autoRefresh === $expected,
             'Latte\Engine::$autoRefresh is not expected ' . ($expected ? 'true' : 'false'));
     }
 
