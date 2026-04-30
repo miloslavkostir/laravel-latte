@@ -19,13 +19,15 @@ Publish config file into `config/latte.php`:
 ```html
 $ php artisan vendor:publish --provider="Miko\LaravelLatte\ServiceProvider"
 ```
-Follow the instructions in the config file.
+Follow the instructions in the config file.  
+
+And that's it! If you want more control, [override the service provider](#custom-extension).
 
 ## Extension
 
-See https://latte.nette.org/tags
-
-And additional:
+The following features are not available in native Latte or behave differently (e.g., tags `{link}`, `{asset}` or translations).
+These features extend Latte with useful helpers and implement Laravel features into the Latte engine.
+On the other hand, features that work in Latte only with the Nette framework or Nette components are not available here (e.g. form tags).
 
 ### Filter `nl2br` <small>(_bool_ $xhtml = `null`)</small>
 
@@ -38,7 +40,7 @@ And additional:
 ### Tags `{link}` and `n:href`
 
 Similar to [tags in Nette](https://doc.nette.org/en/application/creating-links#toc-in-the-presenter-template)
-except that the separator berween controller and method is not `:` but `@` and the default method is not `default` but `index` according to the Laravel conventions.
+except that the separator between controller and method is not `:` but `@` and the default method is not `default` but `index` according to the Laravel conventions.
 Basically this is a simplified call to Laravel's [action()](https://laravel.com/docs/urls#urls-for-controller-actions) helper when
 there is no need to write the entire FQCN and the word `Controller`.
 In addition, it is possible to use the keyword `this` for the current action - then there is no need to write unchanged parameters.
@@ -226,3 +228,54 @@ and is `App\View\Components` by default.
 
 ⚠️ **WARNING:** if the default layout is set in config (`latte.layout`), the component view **must have** `{layout none}` at the beginning.
 Otherwise, Latte engine will try to render the layout again for this component.
+
+## Custom extension
+
+It's possible to overide `Miko\LaravelLatte\ServiceProvider`:
+
+```php
+// app\Providers\LatteServiceProvider
+
+namespace App\Providers;
+
+use Latte\Engine as Latte;
+
+class LatteServiceProvider extends \Miko\LaravelLatte\ServiceProvider
+{
+    /**
+     * Override this method for custom setup
+     * @param \Latte\Engine $latte
+     * @return void
+     */
+    protected function configure(Latte $latte): void
+    {
+        parent::configure($latte);
+
+        $latte->setSomething($this->config->get('latte.something'));
+    }
+
+    /**
+     * Override this method for a custom extension
+     * https://latte.nette.org/extending-latte
+     * @param \Latte\Engine $latte
+     * @return void
+     */
+    protected function extensions(Latte $latte): void
+    {
+        parent::extensions($latte);
+
+        $latte->addFunction(...);
+        $latte->addFilter(...);
+        $latte->addExtension(...);
+    }
+}
+```
+
+```php
+// bootstrap/providers.php
+
+return [
+    // ...
+    App\Providers\LatteServiceProvider::class,
+];
+```
