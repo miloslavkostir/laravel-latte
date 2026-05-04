@@ -99,6 +99,29 @@ return [
     'strict_types' => false,
 
     /*
+    |--------------------------------------------------------------------------
+    | Migration Warnings
+    |--------------------------------------------------------------------------
+    |
+    | Latte 3.1 changes the behavior of some HTML attributes:
+    | https://latte.nette.org/en/html-attributes.
+    | For example, null values now drop the attribute instead of printing
+    | an empty string. To easily find places where this change affects your
+    | templates, you can enable migration warnings.
+    |
+    | When enabled, Latte checks rendered attributes and triggers
+    | a user warning (E_USER_WARNING) if the output differs from what
+    | Latte 3.0 would have produced.
+    |
+    | If "null", true is used for app.debug, otherwise false
+    |
+    | https://latte.nette.org/en/develop#toc-migration-warnings
+    |
+    */
+
+    'migration_warnings' => env('LATTE_MIGRATION_WARNINGS', null),
+
+    /*
     |---------------------------------------------------------------------------
     | Components Namespace
     |---------------------------------------------------------------------------

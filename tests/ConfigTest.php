@@ -364,6 +364,104 @@ class ConfigTest extends TestCase
         });
     }
 
+    // latte.migration_warnings
+
+    public function test_not_configured_migration_warnings_debug(): void
+    {
+        if (\Latte\Engine::VersionId < 30100) {
+            // migration_warnings is available since Latte 3.1.0
+            $this->assertNull(null);
+            return;
+        }
+
+        $this->app['config']->set('app.debug', true);
+
+        $this->expectException(\ErrorException::class);
+        $this->expectExceptionMessage('Behavior change for attribute \'title\' with value null: previously it rendered as title="", now the attribute is omitted');
+
+        $this->assertUniqueView('config/migration_warnings', function (string $newView) {
+            view($newView)->render();
+        });
+    }
+
+    public function test_not_configured_migration_warnings_no_debug(): void
+    {
+        if (\Latte\Engine::VersionId < 30100) {
+            // migration_warnings is available since Latte 3.1.0
+            $this->assertNull(null);
+            return;
+        }
+
+        $this->app['config']->set('app.debug', false);
+
+        $this->assertUniqueView('config/migration_warnings', function (string $newView) {
+            $output = view($newView)->render();
+
+            $expected = <<<HTML
+            <div>Test</div>
+            HTML;
+
+            $this->assertEquals($expected, $output);
+        });
+    }
+
+    public function test_configured_migration_warnings_null(): void
+    {
+        if (\Latte\Engine::VersionId < 30100) {
+            // migration_warnings is available since Latte 3.1.0
+            $this->assertNull(null);
+            return;
+        }
+
+        $this->expectException(\ErrorException::class);
+        $this->expectExceptionMessage('Behavior change for attribute \'title\' with value null: previously it rendered as title="", now the attribute is omitted');
+
+        $this->app['config']->set('latte.migration_warnings', null);
+
+        $this->assertUniqueView('config/migration_warnings', function (string $newView) {
+            view($newView)->render();
+        });
+    }
+
+    public function test_configured_migration_warnings_false(): void
+    {
+        if (\Latte\Engine::VersionId < 30100) {
+            // migration_warnings is available since Latte 3.1.0
+            $this->assertNull(null);
+            return;
+        }
+
+        $this->app['config']->set('latte.migration_warnings', false);
+
+        $this->assertUniqueView('config/migration_warnings', function (string $newView) {
+            $output = view($newView)->render();
+
+            $expected = <<<HTML
+            <div>Test</div>
+            HTML;
+
+            $this->assertEquals($expected, $output);
+        });
+    }
+
+    public function test_configured_migration_warnings_true(): void
+    {
+        if (\Latte\Engine::VersionId < 30100) {
+            // migration_warnings is available since Latte 3.1.0
+            $this->assertNull(null);
+            return;
+        }
+
+        $this->expectException(\ErrorException::class);
+        $this->expectExceptionMessage('Behavior change for attribute \'title\' with value null: previously it rendered as title="", now the attribute is omitted');
+
+        $this->app['config']->set('latte.migration_warnings', true);
+
+        $this->assertUniqueView('config/migration_warnings', function (string $newView) {
+            view($newView)->render();
+        });
+    }
+
     // latte.components_namespace
     // more xhtml tests in ExtensionTest.php
 
