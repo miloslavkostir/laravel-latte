@@ -309,7 +309,7 @@ composer update -W miko/laravel-latte
 ``` 
 
 2\. Set `'strict_types' => true` in `config/latte.php`.  
-Latte 3.1 has strict types by default `true`. Set it accordingly, check your views and fix the errors.
+Latte 3.1 has strict types by default. Set it accordingly, check your views and fix the errors.
 
 3\. Install latest `latte/latte` `v3.1`:
 Lock Latte to `"latte/latte": "3.1.*"` or remove it: 
@@ -322,4 +322,4 @@ Lock Latte to `"latte/latte": "3.1.*"` or remove it:
 composer update -W miko/laravel-latte
 ```
 
-4\. Set `'migration_warnings' => true` in `config/latte.php` (by default, it's enabled for `app.debug`). Check your views and resolve the warnings according to the [documentation](https://latte.nette.org/en/develop#toc-migration-warnings).
+4\. Set `'migration_warnings' => true` in `config/latte.php` (by default, it's [enabled for `app.debug`](https://github.com/miloslavkostir/laravel-latte/blob/3.0.x/config/latte.php#L116)). Check your views and resolve the warnings according to the [documentation](https://latte.nette.org/en/develop#toc-migration-warnings).
