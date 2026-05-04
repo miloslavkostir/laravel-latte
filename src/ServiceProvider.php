@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Miko\LaravelLatte;
 
-use Illuminate\Config\Repository as ConfigRepository;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Foundation\Application;
 use Latte\Bridges\Tracy\TracyExtension;
 use Latte\Engine as Latte;
@@ -32,7 +32,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         ]);
 
         // Latte
-        $this->app->singleton(Latte::class, function ($app) {
+        $this->app->singleton(Latte::class, function (Application $app) {
             return $this->createLatte($app);
         });
 
@@ -96,12 +96,12 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         // Translation
         $latte->addExtension(new TranslationExtension($this->decideAutoRefresh()));
 
-        // Livewire
+        // Livewire support
         if ($this->app->has(LivewireManager::class)) {
             $latte->addExtension(new LivewireExtension());
         }
 
-        // Tracy debugger
+        // Tracy debugger support
         if (class_exists('Tracy\Debugger') && \Tracy\Debugger::isEnabled()) {
             $latte->addExtension(new TracyExtension());
         }

@@ -14,7 +14,7 @@ Then the templating engine is used according to the file extension:
 - `*.latte` - [Latte](https://latte.nette.org)
 
 ⚠️ **Latte 3.1 compatibility notice**
-This package requires `latte/latte: ^3.0`. Be aware that Latte 3.1 introduces breaking changes
+Be aware that Latte 3.1 introduces breaking changes
 in [HTML attribute rendering](https://latte.nette.org/en/html-attributes) — most notably, `null` values now cause attributes to be omitted entirely,
 and boolean attributes behave differently compared to 3.0.
 If your templates rely on the previous behavior, a `composer update` may produce unexpected output.
