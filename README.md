@@ -13,6 +13,21 @@ Then the templating engine is used according to the file extension:
 - `*.blade.php` - [Blade (Laravel default)](https://laravel.com/docs/blade)
 - `*.latte` - [Latte](https://latte.nette.org)
 
+⚠️ **Latte 3.1 compatibility notice**
+This package requires `latte/latte: ^3.0`. Be aware that Latte 3.1 introduces breaking changes 
+in [HTML attribute rendering](https://latte.nette.org/en/html-attributes) — most notably, `null` values now cause attributes to be omitted entirely,
+and boolean attributes behave differently compared to 3.0. 
+If your templates rely on the previous behavior, a `composer update` may produce unexpected output. 
+To stay on the safe 3.0 branch, pin the dependency in your project's `composer.json`:
+
+```json
+"require": {
+    "miko/laravel-latte": "^3.0",
+    "latte/latte": "3.0.*"
+}
+```
+See the recommended [migration guide](#migration-to-3-1).
+
 ## Configuration
 
 Publish config file into `config/latte.php`:
@@ -279,3 +294,32 @@ return [
     App\Providers\LatteServiceProvider::class,
 ];
 ```
+
+<a name="migration-to-3-1"></a>
+## Migration from Latte 3.0 to Latte 3.1
+1\. Install latest `latte/latte` `v3.0`:  
+```json
+"require": {
+    "miko/laravel-latte": "^3.0",
+    "latte/latte": "3.0.*"
+}
+```
+```bash
+composer update -W miko/laravel-latte
+``` 
+
+2\. Set `'strict_types' => true` in `config/latte.php`.  
+Latte 3.1 has strict types by default `true`. Set it accordingly, check your views and fix the errors.
+
+3\. Install latest `latte/latte` `v3.1`:
+Lock Latte to `"latte/latte": "3.1.*"` or remove it: 
+```json
+"require": {
+    "miko/laravel-latte": "^3.0",
+}
+```
+```bash
+composer update -W miko/laravel-latte
+```
+
+4\. Set `'migration_warnings' => true` in `config/latte.php` (by default, it's enabled for `app.debug`). Check your views and resolve the warnings according to the [documentation](https://latte.nette.org/en/develop#toc-migration-warnings).

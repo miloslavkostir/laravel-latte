@@ -66,9 +66,9 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         $latte->setAutoRefresh($this->decideAutoRefresh());
         $latte->setStrictParsing($config->get('latte.strict_parsing'));
         $latte->setStrictTypes($config->get('latte.strict_types'));
-        if (enum_exists(\Latte\Feature::class)) {
+        if (method_exists(Latte::class, 'setMigrationWarnings')) {
             // Latte 3.1.
-            $latte->setFeature(\Latte\Feature::MigrationWarnings, $this->decideMigrationWarnings());
+            $latte->setMigrationWarnings($this->decideMigrationWarnings());
         }
 
         $latte->addProvider('coreParentFinder', function (Template $template) use ($config) {
