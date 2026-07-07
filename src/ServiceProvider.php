@@ -6,9 +6,12 @@ namespace Miko\LaravelLatte;
 
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Foundation\Application;
+use InvalidArgumentException;
+use Miko\LaravelLatte\Loaders\LaravelLoader;
 use Latte\Bridges\Tracy\TracyExtension;
 use Latte\Engine as Latte;
 use Latte\Feature;
+use Latte\Loader;
 use Latte\Runtime\Template;
 use Livewire\LivewireManager;
 
@@ -70,12 +73,37 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         $latte->setFeature(Feature::ScopedLoopVariables, $config->get('latte.scoped_loop_variables'));
         $latte->setFeature(Feature::Dedent, $config->get('latte.dedent'));
         $latte->setFeature(Feature::MigrationWarnings, $this->decideMigrationWarnings());
+        $this->configureLoader($latte);
 
         $latte->addProvider('coreParentFinder', function (Template $template) use ($config) {
             if (!$template->getReferenceType() && $layout = $config->get('latte.layout')) {
                 return $layout;
             }
         });
+    }
+
+    protected function configureLoader(Latte $latte): void
+    {
+        $loader = $this->config->get('latte.loader', 'nette');
+
+        if ($loader === null || $loader === 'nette') {
+            return;
+        }
+
+        if ($loader === 'laravel') {
+            $latte->setLoader(new LaravelLoader($this->app->get('view')));
+            return;
+        }
+
+        if (is_string($loader) && class_exists($loader)) {
+            $loader = $this->app->make($loader);
+        }
+
+        if (! $loader instanceof Loader) {
+            throw new InvalidArgumentException('Latte loader must be "nette", "laravel", or a class implementing ' . Loader::class . '.');
+        }
+
+        $latte->setLoader($loader);
     }
 
     protected function decideAutoRefresh(): bool

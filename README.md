@@ -38,6 +38,25 @@ Follow the instructions in the config file.
 
 And that's it! If you want more control, [override the service provider](#custom-extension).
 
+### Laravel view file loader
+
+By default, Latte uses its native filesystem loader. To resolve includes like Laravel views, enable the Laravel loader:
+
+```php
+// config/latte.php
+'loader' => 'laravel', // default: 'nette'
+```
+
+```html
+{* resources/views/users/index.latte *}
+
+{include partials.card, user: $user}  {* resources/views/partials/card.latte *}
+{include file dashboard}              {* resources/views/dashboard.latte *}
+{include ./card.latte}                {* resources/views/users/card.latte *}
+```
+
+Dotted names use Laravel view resolution. Path-like names (`./`, `../`, `/`) stay relative or absolute filesystem paths. Use `{include file foo}` for root views, because `{include foo}` means block `foo` in Latte.
+
 ## Extension
 
 The following features are not available in native Latte or behave differently (e.g., tags `{link}`, `{asset}` or translations).
