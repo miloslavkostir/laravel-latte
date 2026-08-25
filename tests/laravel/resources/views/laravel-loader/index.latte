@@ -1,0 +1,8 @@
+{layout none}{define foo}BLOCK {$title}{/define}
+A:{include foo}
+B:{include laravel-loader.partials.card, title: $title}
+C:{include ./relative-fragment.latte}
+D:{include $absoluteView}
+E:{include 'laravel-loader::namespaced', value: $title}
+F:{include alternate.location, title: $title}
+G:{include file foo, title: $title}

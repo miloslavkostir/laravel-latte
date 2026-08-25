@@ -21,6 +21,21 @@ return [
 
     /*
     |---------------------------------------------------------------------------
+    | Template Loader
+    |---------------------------------------------------------------------------
+    |
+    | The default "nette" loader keeps Latte's native filesystem behavior.
+    | The optional "laravel" loader resolves dotted and namespaced view names
+    | through Laravel's view finder, including registered view paths and hints.
+    |
+    | Supported values: "nette", "laravel", or a class implementing Latte\Loader.
+    |
+    */
+
+    'loader' => 'nette',
+
+    /*
+    |---------------------------------------------------------------------------
     | XHTML or HTML
     |---------------------------------------------------------------------------
     |
